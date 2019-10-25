@@ -102,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+poetry.lock
+
+# fetchmesh output
+ping_v*
+traceroute_v*
+pairs.json
