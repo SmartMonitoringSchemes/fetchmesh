@@ -19,6 +19,6 @@ class SingleFileFetcher(Fetcher):
             self.logger.debug("%s already exists, skipping...", file)
             return
 
-        it = self.client.fetch_results_stream(meta)
+        it = self.client.fetch_results_stream(meta.remote_url())
         with AtlasRecordsWriter(file, self.filters, meta.compressed) as w:
             w.writeall(it)
