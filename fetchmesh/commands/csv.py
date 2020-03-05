@@ -121,5 +121,3 @@ def csv(files, dir, mode):
         df.columns = ["pair"] + timestamps.tolist()
         name = f"merge_{int(dt.datetime.now().timestamp())}.csv"
         df.to_csv(name, index=False)
-
-    tmp.cleanup()
