@@ -44,11 +44,7 @@ class MeasurementType(Enum):
 
 class Country:
     def __init__(self, country_code):
-        try:
-            self.info = countries[country_code]
-        except:
-            self.info = countries["FR"]
-            print(country_code)
+        self.info = countries[country_code]
 
     def __eq__(self, o):
         return self.country_code == o.country_code

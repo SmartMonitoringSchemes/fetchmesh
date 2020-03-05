@@ -16,7 +16,8 @@ class Cache:
         self.dir = Path(user_cache_dir(name))
         self.dir.mkdir(parents=True, exist_ok=True)
 
-    def filename(self, key):
+    @staticmethod
+    def filename(key):
         key = key.encode("utf-8")
         return sha256(key).digest().hex() + ".pkl"
 

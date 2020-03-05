@@ -80,6 +80,9 @@ def tryfunc(f: Callable, default=None):
     def wrapper(*args, **kwargs):
         try:
             return f(*args, **kwargs)
+        # pylint: disable=W0702
+        # We explicitly catch all exceptions here,
+        # since we don't known what can happen inside `f`.
         except:
             print_exc()
             return default
