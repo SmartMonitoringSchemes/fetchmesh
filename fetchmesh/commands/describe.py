@@ -4,10 +4,10 @@ from collections import defaultdict
 import click
 import tableformatter as tf
 
+from ..atlas import MeasurementAF, MeasurementType
 from ..ext import DateParseParamType, bprint
 from ..filters import HalfPairFilter, MeasurementDateFilter, SelfPairFilter
 from ..mesh import AnchoringMesh
-from ..meta import MeasurementAF, MeasurementType
 from ..utils import countby
 
 

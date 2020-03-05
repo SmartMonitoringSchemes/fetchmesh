@@ -4,9 +4,8 @@ from itertools import product
 
 from cached_property import cached_property
 
-from .atlas import AtlasClient
+from .atlas import AtlasAnchor, AtlasClient, AtlasMeasurement
 from .filters import AnchorFilter, MeasurementFilter
-from .meta import AtlasAnchor, AtlasMeasurement
 
 
 class AnchoringMeshPairs:
@@ -87,9 +86,9 @@ class AnchoringMesh:
     .. code-block:: python
 
         from datetime import datetime
+        from fetchmesh.atlas import MeasurementAF, MeasurementType
         from fetchmesh.filters import MeasurementDateFilter, MeasurementTypeFilter
         from fetchmesh.mesh import AnchoringMesh
-        from fetchmesh.meta import MeasurementAF, MeasurementType
 
         mesh = AnchoringMesh.from_api()
 

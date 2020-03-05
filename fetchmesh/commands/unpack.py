@@ -1,9 +1,10 @@
 import click
 from tqdm import tqdm
 
+from ..atlas import MeasurementAF, MeasurementType
 from ..ext import DateParseParamType, EnumChoice, PathParamType, bprint, format_args
 from ..io import AtlasRecordsReader, AtlasRecordsWriter
-from ..meta import AtlasResultsMeta, MeasurementAF, MeasurementType
+from ..meta import AtlasResultsMeta
 from ..utils import groupby_stream
 
 

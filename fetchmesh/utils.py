@@ -3,18 +3,7 @@ import json
 import random
 from collections import defaultdict
 from traceback import print_exc
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    Iterator,
-    List,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, TypeVar, Union
 
 T = TypeVar("T")
 U = TypeVar("U")

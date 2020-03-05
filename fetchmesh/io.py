@@ -1,9 +1,8 @@
-import json
 import struct
 from dataclasses import dataclass, field
 from io import TextIOWrapper
 from pathlib import Path
-from traceback import print_exc, print_exception
+from traceback import print_exception
 from typing import Iterable, List
 
 from zstandard import ZstdCompressor, ZstdDecompressor

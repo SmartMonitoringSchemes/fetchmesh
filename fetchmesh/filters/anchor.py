@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from itertools import chain
 from typing import List, Union
 
-from ..meta import AtlasAnchor, AtlasAnchorPair
+from ..atlas import AtlasAnchor, AtlasAnchorPair
 from ..utils import groupby_pairs, sample_groups
 from .abstract import BatchFilter
 

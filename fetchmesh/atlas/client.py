@@ -101,7 +101,8 @@ class AtlasClient(BaseAtlasClient):
 
         return results
 
-    def fetch_results_stream(self, url):
+    def fetch_results_stream(self, path):
+        url = self.base_url + path
         r = requests.get(url, stream=True, timeout=self.timeout)
         if r.status_code != 200:
             self.logger.warn("%s status for GET %s", r.status_code, url)

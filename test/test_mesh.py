@@ -1,5 +1,5 @@
+from fetchmesh.atlas import MeasurementAF, MeasurementType
 from fetchmesh.mesh import AnchoringMesh, AnchoringMeshPairs
-from fetchmesh.meta import MeasurementAF, MeasurementType
 
 
 def test_pairs_indexing():

@@ -1,7 +1,7 @@
 from hypothesis import given
 
+from fetchmesh.atlas import AtlasAnchor, Country
 from fetchmesh.filters import HalfPairFilter, PairRegionSampler
-from fetchmesh.meta import AtlasAnchor, Country
 from strategies import atlas_results_metas
 
 

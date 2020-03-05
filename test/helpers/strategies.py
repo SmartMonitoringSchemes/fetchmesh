@@ -12,7 +12,8 @@ from hypothesis.strategies import (
     sampled_from,
 )
 
-from fetchmesh.meta import AtlasResultsMeta, MeasurementAF, MeasurementType
+from fetchmesh.atlas import MeasurementAF, MeasurementType
+from fetchmesh.meta import AtlasResultsMeta
 
 
 @composite

@@ -2,7 +2,7 @@ import datetime as dt
 from dataclasses import dataclass
 from typing import Optional
 
-from ..meta import AtlasMeasurement, MeasurementAF, MeasurementType
+from ..atlas import AtlasMeasurement, MeasurementAF, MeasurementType
 from .abstract import StreamFilter
 
 

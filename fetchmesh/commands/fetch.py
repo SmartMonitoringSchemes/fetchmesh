@@ -6,6 +6,7 @@ from traceback import print_exc
 import click
 from tqdm import tqdm
 
+from ..atlas import MeasurementAF, MeasurementType
 from ..ext import DateParseParamType, EnumChoice, PathParamType, bprint, format_args
 from ..fetcher import SingleFileFetcher
 from ..filters import (
@@ -16,7 +17,7 @@ from ..filters import (
     SelfPairFilter,
 )
 from ..mesh import AnchoringMesh, AnchoringMeshPairs
-from ..meta import AtlasResultsMeta, MeasurementAF, MeasurementType
+from ..meta import AtlasResultsMeta
 from ..utils import daterange, totimestamp
 
 
