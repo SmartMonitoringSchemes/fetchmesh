@@ -65,17 +65,10 @@ class AtlasClient:
 
             workers = min(self.max_workers, len(queue))
             with ThreadPoolExecutor(workers) as executor:
-                futures = [
-                    executor.submit(lambda x: self.get_one(*x), x) for x in queue
-                ]
-                futures = tqdm(
-                    as_completed(futures),
-                    endpoint,
-                    disable=not self.show_progress,
-                    total=len(queue),
-                    leave=False,
-                )
-
+                fn = lambda x: self.get_one(*x)
+                futures = as_completed(executor.submit(fn, x) for x in queue)
+                if self.show_progress:
+                    futures = tqdm(futures, endpoint, total=len(queue), leave=False)
                 for future in futures:
                     res, _ = future.result()
                     results.extend(res)
@@ -91,9 +84,38 @@ class AtlasClient:
     def fetch_anchors(self):
         return self.get_all("anchors")
 
+    def fetch_measurements(self, params):
+        return self.get_all("measurements", params)
+
+    # This endpoint is currently broken, it returns random
+    # results. Email sent to Atlas support on 2020/02/17.
+    # def fetch_anchoring_measurements(self):
+    #     params = {"include": "measurement,target"}
+    #     return self.get_all("anchor-measurements", params)
+
+    # Alternative way to get the same results
+    # as the /anchor-measurements endpoint.
     def fetch_anchoring_measurements(self):
-        params = {"include": "measurement,target"}
-        return self.get_all("anchor-measurements", params)
+        anchors = self.fetch_anchors()
+        measurements = self.fetch_measurements(
+            {"description__startswith": "Anchoring Mesh Measurement:"}
+        )
+
+        targets = {x["fqdn"]: x for x in anchors}
+        results = []
+        missing = set()
+
+        for x in measurements:
+            if not x["target"] in targets:
+                missing.add(x["target"])
+                continue
+            target = targets[x["target"]]
+            results.append({"measurement": x, "target": target})
+
+        if len(missing) > 0:
+            self.logger.warning("%s missing anchors", len(missing))
+
+        return results
 
     def fetch_results_stream(self, meta: AtlasResultsMeta) -> Iterable[dict]:
         url = meta.remote_url()
