@@ -1,6 +1,5 @@
 import datetime as dt
 import json
-import logging
 import random
 from collections import defaultdict
 from traceback import print_exc
@@ -19,11 +18,6 @@ from typing import (
 
 T = TypeVar("T")
 U = TypeVar("U")
-
-
-def getLogger(instance):
-    cls = instance.__class__
-    return logging.getLogger(f"{cls.__module__}.{cls.__name__}")
 
 
 def countby(elements: List[T], key: Callable[[T], U]) -> Dict[U, int]:

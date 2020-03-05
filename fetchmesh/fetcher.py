@@ -1,7 +1,8 @@
+import logging
+
 from .atlas import AtlasClient
 from .io import AtlasRecordsWriter
 from .meta import AtlasResultsMeta
-from .utils import getLogger
 
 
 class Fetcher:
@@ -9,7 +10,7 @@ class Fetcher:
         self.outdir = outdir
         self.client = client
         self.filters = filters
-        self.logger = getLogger(self)
+        self.logger = logging.getLogger(__name__)
 
 
 class SingleFileFetcher(Fetcher):
