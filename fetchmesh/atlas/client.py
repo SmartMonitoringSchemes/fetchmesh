@@ -1,4 +1,5 @@
 import json
+import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from math import ceil
 from urllib.parse import urlencode
@@ -7,7 +8,6 @@ import requests
 from tqdm import tqdm
 
 from .cache import Cache
-from .utils import getLogger
 
 ATLAS_API_URL = "https://atlas.ripe.net/api/v2"
 
@@ -23,7 +23,7 @@ class BaseAtlasClient:
         self.progress = progress
         self.threads = threads
         self.timeout = timeout
-        self.logger = getLogger(self)
+        self.logger = logging.getLogger(__name__)
         self.cache = Cache()
 
     def encode_url(self, url, params):
