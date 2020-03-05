@@ -6,7 +6,7 @@ import click
 from pandas import DataFrame, Timedelta, concat
 from tqdm import tqdm
 
-from ..cli_ext import PathParamType, bprint
+from ..ext import PathParamType, bprint
 from ..io import AtlasRecordsReader, AtlasRecordsWriter
 from ..utils import groupby_stream
 

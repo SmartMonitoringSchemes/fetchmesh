@@ -4,7 +4,7 @@ from collections import defaultdict
 import click
 import tableformatter as tf
 
-from ..cli_ext import DateParseParamType, bprint
+from ..ext import DateParseParamType, bprint
 from ..filters import HalfPairFilter, MeasurementDateFilter, SelfPairFilter
 from ..mesh import AnchoringMesh
 from ..meta import MeasurementAF, MeasurementType

@@ -6,7 +6,7 @@ from traceback import print_exc
 import click
 from tqdm import tqdm
 
-from ..cli_ext import DateParseParamType, EnumChoice, PathParamType, bprint, format_args
+from ..ext import DateParseParamType, EnumChoice, PathParamType, bprint, format_args
 from ..fetcher import SingleFileFetcher
 from ..filters import (
     HalfPairFilter,
