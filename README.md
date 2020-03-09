@@ -18,7 +18,7 @@ See the [issues](https://github.com/maxmouchet/fetchmesh/issues) on GitHub to se
 
 ## Prerequisites
 
-fetchmesh uses [dataclasses](https://docs.python.org/3/library/dataclasses.html) which are a **Python 3.7** feature.  
+fetchmesh uses [dataclasses](https://docs.python.org/3/library/dataclasses.html) which are a **Python 3.7** feature.
 A [Conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-environments) with Python 3.7 can be created as follow:
 
 ```bash
@@ -29,11 +29,17 @@ python --version # Python 3.7.6
 
 ## Installation
 
-Since this package is not public, it is not published to PyPI.  
-Instead, download the latest release from GitHub (https://github.com/maxmouchet/fetchmesh/releases/latest/download/fetchmesh.whl), and run the following (in the directory where the file was downloaded):
-
+Since this package is not public, it is not published to PyPI.
+Instead it can be installed directly from GitHub:
 ```bash
-pip install --upgrade fetchmesh.whl
+pip install --upgrade pip
+pip install --upgrade git+ssh://git@github.com/maxmouchet/fetchmesh.git
+```
+
+or from a localy copy:
+```bash
+git clone git@github.com:maxmouchet/fetchmesh.git
+cd fetchmesh; pip install .
 ```
 
 To verify the installation:
@@ -120,7 +126,7 @@ Tool | Usage | Command
 
 ### Release
 
-To create a release (will trigger the [release.yml](.github/workflows/release.yml) workflow):
+To create a release:
 
 ```bash
 poetry version x.x.x
