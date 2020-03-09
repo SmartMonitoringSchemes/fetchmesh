@@ -79,7 +79,9 @@ class AtlasRecordsReader:
         if exc_type:
             print_exception(exc_type, exc_value, traceback)
 
-    # TODO: Handle list, glob pattern, ...
     @classmethod
-    def glob(cls, todo):
-        pass
+    def all(cls, files):
+        for file in files:
+            with cls(file) as rdr:
+                for record in rdr:
+                    yield record
