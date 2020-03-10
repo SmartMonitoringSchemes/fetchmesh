@@ -20,7 +20,29 @@ class PingMinimumTransformer(RecordTransformer):
 
 @dataclass
 class TracerouteFlatIPTransformer(RecordTransformer):
+
+    drop_dup: bool = False
+    """
+    Drop duplicate results, e.g.
+        {'dup': True, 'from': '203.181.249.93', 'rtt': 280.552, 'size': 28, 'ttl': 231}
+         ^^^^^^^^^^^
+    """
+
+    drop_late: bool = False
+    """
+    Drop late results, e.g.
+        {"from":"4.68.72.66","late":2,"size":68,"ttl":56}
+                              ^^^^^^^^
+    """
+
     drop_private: bool = False
+    """
+    Drop private IP addresses:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+        - fd00::/8
+    """
 
     @staticmethod
     @lru_cache(maxsize=65536)
@@ -32,6 +54,13 @@ class TracerouteFlatIPTransformer(RecordTransformer):
         for hop in record.get("result", []):
             addrs = []
             for reply in hop.get("result", []):
+                # Sometimes results contains an empty object {}
+                if not reply:
+                    continue
+                if self.drop_dup and reply.get("dup"):
+                    continue
+                if self.drop_late and reply.get("late"):
+                    continue
                 addr = reply.get("from")
                 if self.drop_private and addr and self.is_private(addr):
                     addr = None

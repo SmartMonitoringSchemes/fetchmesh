@@ -148,10 +148,18 @@ def traceroute(files, drop_private):
     Convert traceroute results.
 
     \b
+    NOTES
+    -----
+    - Late packets are dropped.
+
+
+    \b
     timestamp | pair | paris_id | hop1_1 | ... | hop32_3
     ----------|------|----------|--------|-----|--------
     """
-    tfip = TracerouteFlatIPTransformer(drop_private=drop_private)
+    tfip = TracerouteFlatIPTransformer(
+        drop_dup=True, drop_late=True, drop_private=drop_private
+    )
 
     # TODO: Proper context manager?
     output = open(f"traceroutes_{int(dt.datetime.now().timestamp())}.csv", "w")
@@ -163,10 +171,18 @@ def traceroute(files, drop_private):
 
     for record in tqdm(reader, desc=""):
         record = tfip(record)
+
+        hops = record["hops"]
+        assert all(len(hop) == 3 for hop in hops)
+
+        # Pad hops
+        if len(hops) < 32:
+            hops += [[None] * 3] * (32 - len(hops))
+
         row = (
             record["timestamp"],
             record["from"] + "_" + record["dst_addr"],
             record["paris_id"],
-            *itertools.chain(*record["hops"]),
+            *itertools.chain(*hops),
         )
         writer.writerow(row)
