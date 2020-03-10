@@ -82,6 +82,11 @@ class AtlasRecordsReader:
     @classmethod
     def all(cls, files):
         for file in files:
-            with cls(file) as rdr:
+            with cls(Path(file)) as rdr:
                 for record in rdr:
                     yield record
+
+    @classmethod
+    def glob(cls, path, pattern):
+        files = Path(path).glob(pattern)
+        return cls.all(files)
