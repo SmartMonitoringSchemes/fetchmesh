@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from functools import lru_cache
+from ipaddress import ip_address
 
 
 class RecordTransformer(ABC):
@@ -15,18 +18,31 @@ class PingMinimumTransformer(RecordTransformer):
         return {"timestamp": record["timestamp"], "min": record["min"]}
 
 
+@dataclass
 class TracerouteFlatIPTransformer(RecordTransformer):
+    drop_private: bool = False
+
+    @staticmethod
+    @lru_cache(maxsize=65536)
+    def is_private(addr: str) -> bool:
+        return ip_address(addr).is_private
+
     def transform(self, record: dict) -> dict:
         hops = []
         for hop in record.get("result", []):
             addrs = []
             for reply in hop.get("result", []):
-                addrs.append(reply.get("from"))
+                addr = reply.get("from")
+                if self.drop_private and addr and self.is_private(addr):
+                    addr = None
+                addrs.append(addr)
             hops.append(addrs)
 
         return {
             "timestamp": record["timestamp"],
+            "from": record["from"],
             "src_addr": record["src_addr"],
             "dst_addr": record["dst_addr"],
+            "paris_id": record["paris_id"],
             "hops": hops,
         }

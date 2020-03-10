@@ -1,4 +1,6 @@
 import datetime as dt
+import itertools
+from csv import writer as CSVWriter
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -8,10 +10,21 @@ from tqdm import tqdm
 
 from ..ext import PathParamType, bprint
 from ..io import AtlasRecordsReader, AtlasRecordsWriter
+from ..transformers import TracerouteFlatIPTransformer
 from ..utils import groupby_stream
 
+# TODO: Implement parallel processing
 
-@click.command()
+
+@click.group()
+def csv():
+    """
+    Convert measurement results to CSV.
+    """
+    pass
+
+
+@csv.command()
 @click.option(
     "--dir",
     default=".",
@@ -27,15 +40,13 @@ from ..utils import groupby_stream
     help="In split mode one file is created per pair, in merge mode a single file is created.",
 )
 @click.argument("files", required=True, nargs=-1, type=PathParamType())
-# TODO: Implement parallel processing
-def csv(files, dir, mode):
+def ping(files, dir, mode):
     """
-    Convert measurement results to CSV.
+    Convert ping results.
 
     \b
     NOTES
     -----
-    - Only ping measurement are supported, for now.
     - Timestamps are aligned on 240s (4 minutes), even though
       measurement may have happened at +/- 120s.
 
@@ -121,3 +132,41 @@ def csv(files, dir, mode):
         df.columns = ["pair"] + timestamps.tolist()
         name = f"merge_{int(dt.datetime.now().timestamp())}.csv"
         df.to_csv(name, index=False)
+
+
+@csv.command()
+@click.option(
+    "--drop-private",
+    default=False,
+    show_default=True,
+    is_flag=True,
+    help="Remove private IP addresses (v4 and v6)",
+)
+@click.argument("files", required=True, nargs=-1, type=PathParamType())
+def traceroute(files, drop_private):
+    """
+    Convert traceroute results.
+
+    \b
+    timestamp | pair | paris_id | hop1_1 | ... | hop32_3
+    ----------|------|----------|--------|-----|--------
+    """
+    tfip = TracerouteFlatIPTransformer(drop_private=drop_private)
+
+    # TODO: Proper context manager?
+    output = open(f"traceroutes_{int(dt.datetime.now().timestamp())}.csv", "w")
+    writer = CSVWriter(output)
+    reader = AtlasRecordsReader.all(files)
+
+    hops = [[f"hop{i}_{j}" for j in range(1, 4)] for i in range(1, 33)]
+    writer.writerow(["timestamp", "pair", "paris_id", *itertools.chain(*hops)])
+
+    for record in tqdm(reader, desc=""):
+        record = tfip(record)
+        row = (
+            record["timestamp"],
+            record["from"] + "_" + record["dst_addr"],
+            record["paris_id"],
+            *itertools.chain(*record["hops"]),
+        )
+        writer.writerow(row)

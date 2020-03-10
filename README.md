@@ -86,7 +86,7 @@ head -n 1 ping_v4_1580511600_1580598000/ping_v4_1580511600_1580598000_1042404_an
 
 ```bash
 # Generate a single CSV files with all the time series
-fetchmesh csv --mode merge ping_v4_1580511600_1580598000/*
+fetchmesh csv ping --mode merge ping_v4_1580511600_1580598000/*
 
 head -n 2 merge_1583317062.csv
 # pair,1580511600,1580511840,1580512080,...
