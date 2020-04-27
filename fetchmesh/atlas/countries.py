@@ -1541,6 +1541,13 @@ countries_ = [
         "name": "Puerto Rico",
         "capital": "San Juan",
     },
+    {
+        "timezones": ["AST"],
+        "code": "SX",
+        "continent": "America",
+        "name": "Sint Maarten",
+        "capital": "Philipsburg",
+    },
 ]
 
 countries = {x["code"]: x for x in countries_}
