@@ -21,6 +21,11 @@ class PingMinimumTransformer(RecordTransformer):
 @dataclass
 class TracerouteFlatIPTransformer(RecordTransformer):
 
+    as_set: bool = False
+    """
+    Return each hop as a set instead of a list of addresses.
+    """
+
     drop_dup: bool = False
     """
     Drop duplicate results, e.g.
@@ -52,7 +57,7 @@ class TracerouteFlatIPTransformer(RecordTransformer):
     def transform(self, record: dict) -> dict:
         hops = []
         for hop in record.get("result", []):
-            addrs = []
+            addrs = []  # type: ignore
             for reply in hop.get("result", []):
                 # Sometimes results contains an empty object {}
                 if not reply:
@@ -65,6 +70,8 @@ class TracerouteFlatIPTransformer(RecordTransformer):
                 if self.drop_private and addr and self.is_private(addr):
                     addr = None
                 addrs.append(addr)
+            if self.as_set:
+                addrs = set(addrs)  # type: ignore
             hops.append(addrs)
 
         return {
