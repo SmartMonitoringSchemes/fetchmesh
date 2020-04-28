@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
@@ -106,16 +107,35 @@ class AtlasMeasurement:
     description: str
     tags: Tuple[str, ...]
 
+    ANCHOR_NAME_PATTERN = re.compile(r"^(\w+)-(\w+)-(as\d+).+$")
+    ANCHOR_NAME_PATTERN_FALLBACK = re.compile(r"^.+anchor\s+(.+?)\..")
+    ANCHOR_PROBE_PATTERN = re.compile(r"^\d+$")
+
     @cached_property
     def anchor_name(self) -> Optional[str]:
         if self.is_anchoring:
-            return self.tags[1]
+            # Unfortunately, tags are not always ordered the same:
+            # 1404703:  (anchoring, de-str-as553, 6035, mesh)
+            # 23589837: (6683, de-str-as553, mesh, anchoring)
+            # return self.tags[1]
+            for tag in self.tags:
+                if self.ANCHOR_NAME_PATTERN.match(tag):
+                    return tag
+            # Fallback on measurement description
+            match = self.ANCHOR_NAME_PATTERN_FALLBACK.match(self.description)
+            if match:
+                return match.group(1)
         return None
 
     @cached_property
     def anchor_probe(self) -> Optional[int]:
         if self.is_anchoring:
-            return int(self.tags[2])
+            # See comment for `anchor_name`
+            # return int(self.tags[2])
+            for tag in self.tags:
+                if self.ANCHOR_PROBE_PATTERN.match(tag):
+                    return int(tag)
+            # print(f"Measurement {self.id} (is_anchoring=True): anchor probe not found in tags ({self.tags})")
         return None
 
     @cached_property
