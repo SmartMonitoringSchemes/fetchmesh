@@ -8,6 +8,7 @@ from typing import Iterable, List
 from zstandard import ZstdCompressor, ZstdDecompressor
 
 from .filters import StreamFilter
+from .transformers import RecordTransformer
 from .utils import json_trydumps, json_tryloads
 
 
@@ -61,6 +62,7 @@ class AtlasRecordsWriter:
 class AtlasRecordsReader:
     file: Path
     filters: List[StreamFilter[dict]] = field(default_factory=list)
+    transformers: List[RecordTransformer] = field(default_factory=list)
 
     def __enter__(self):
         codec = detect_codec(self.file)
@@ -69,10 +71,13 @@ class AtlasRecordsReader:
             ctx = ZstdDecompressor()
             self.f = ctx.stream_reader(self.f)
         self.f = TextIOWrapper(self.f, "utf-8")
-        return filter(
+        stream = filter(
             lambda record: all(f.keep(record) for f in self.filters),
             map(json_tryloads, self.f),
         )
+        for f in self.transformers:
+            stream = map(f, stream)
+        return stream
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.f.close()
