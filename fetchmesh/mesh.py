@@ -135,6 +135,16 @@ class AnchoringMesh:
                 return measurement
         return None
 
+    def find_sibling(self, measurement, type_):
+        for _, other in self._data:
+            if (
+                other.type == type_
+                and other.af == measurement.af
+                and other.anchor_probe == measurement.anchor_probe
+            ):
+                return other
+        return None
+
     @classmethod
     def from_api(cls, client=AtlasClient()):
         """
