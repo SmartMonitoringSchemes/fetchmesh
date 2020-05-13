@@ -18,8 +18,16 @@ class BaseAtlasClient:
     Handles caching, and concurrent requests for paginated results.
     """
 
-    def __init__(self, base_url=ATLAS_API_URL, progress=True, threads=4, timeout=15):
+    def __init__(
+        self,
+        base_url=ATLAS_API_URL,
+        page_size=500,
+        progress=True,
+        threads=4,
+        timeout=15,
+    ):
         self.base_url = base_url
+        self.page_size = page_size
         self.progress = progress
         self.threads = threads
         self.timeout = timeout
@@ -35,6 +43,7 @@ class BaseAtlasClient:
         return self.cache.get(url, f)
 
     def get_one(self, endpoint, params={}):
+        params = {**params, "page_size": self.page_size}
         obj = self.get(endpoint, params).json()
         return obj["results"], obj["count"]
 
