@@ -71,8 +71,17 @@ class AtlasAnchor:
     as_v4: Optional[int]
     as_v6: Optional[int]
 
+    # We rely on the fqdn to compare the anchors, and not on the id.
+    # This is more robust if an anchor is decomissionned and replaced by another.
+    # For example https://atlas.ripe.net/probes/6118/
+    # > This anchor has been decommissioned (removed) as of 2019-09-02 09:01 UTC.
+    # > It has been replaced by https://atlas.ripe.net/probes/6593/
+
+    def __eq__(self, o):
+        return self.fqdn == o.fqdn
+
     def __lt__(self, o):
-        return self.id < o.id
+        return self.fqdn < o.fqdn
 
     @classmethod
     def from_dict(cls, d: dict):

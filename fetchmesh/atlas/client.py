@@ -106,7 +106,7 @@ class AtlasClient(BaseAtlasClient):
             results.append({"measurement": x, "target": target})
 
         if len(missing) > 0:
-            self.logger.warning("%s missing anchors", len(missing))
+            self.logger.warning("%s targets not found: %s", len(missing), missing)
 
         return results
 
