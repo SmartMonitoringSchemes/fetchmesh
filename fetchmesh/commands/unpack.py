@@ -1,5 +1,5 @@
 import click
-from tqdm import tqdm
+from rich.progress import track
 
 from ..atlas import MeasurementAF, MeasurementType
 from ..ext import DateParseParamType, EnumChoice, PathParamType, bprint, format_args
@@ -66,8 +66,8 @@ def unpack(**args):
         index[msm_id] = metas
 
     # TODO: Cleanup dir before
-    for (msm_id, metas) in tqdm(index.items()):
-        for meta in tqdm(metas, leave=False):
+    for (msm_id, metas) in track(index.items()):
+        for meta in track(metas):
             key = lambda x: (x["msm_id"], x["prb_id"])
             file = args["source"].joinpath(meta.filename())
             with AtlasRecordsReader(file) as r:

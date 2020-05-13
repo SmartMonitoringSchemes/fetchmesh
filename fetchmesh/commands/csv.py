@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 
 import click
 from pandas import DataFrame, Timedelta, concat
-from tqdm import tqdm
+from rich.progress import track
 
 from ..ext import PathParamType, bprint
 from ..io import AtlasRecordsReader, AtlasRecordsWriter
@@ -78,7 +78,7 @@ def ping(files, dir, mode):
 
     # TODO: Proper filename (ping_v4_..._..._msm_id_prb_id.ndjson.zst)
 
-    for file in tqdm(files, desc="groupby"):
+    for file in track(files, description="groupby"):
         # This read stream -> group stream -> write pattern
         # is useful for limiting the number of open file descriptors
         # at any given time.
@@ -96,7 +96,7 @@ def ping(files, dir, mode):
     # this should fit in memory (hopefully ...).
     frames = {}
 
-    for pair, file in tqdm(tmpfiles.items(), desc="resample"):
+    for pair, file in track(tmpfiles.items(), description="resample"):
         with AtlasRecordsReader(file) as r:
             df = DataFrame.from_records(r, columns=["timestamp", "min"])
             # Set index to timestamp
@@ -110,7 +110,7 @@ def ping(files, dir, mode):
 
     # 3a. In split mode, we just have to write these frames to CSVs.
     if mode == "split":
-        for pair, frame in tqdm(frames.items(), desc="write"):
+        for pair, frame in track(frames.items(), description="write"):
             name = "{}_{}.ndjson".format(*pair)
             file = dir.joinpath(name)
             frame.reset_index(inplace=True)
@@ -169,7 +169,7 @@ def traceroute(files, drop_private):
     hops = [[f"hop{i}_{j}" for j in range(1, 4)] for i in range(1, 33)]
     writer.writerow(["timestamp", "pair", "paris_id", *itertools.chain(*hops)])
 
-    for record in tqdm(reader, desc=""):
+    for record in track(reader, desc=""):
         record = tfip(record)
 
         hops = record["hops"]

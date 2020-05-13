@@ -5,7 +5,7 @@ from math import ceil
 from urllib.parse import urlencode
 
 import requests
-from tqdm import tqdm
+from rich.progress import track
 
 from .cache import Cache
 
@@ -59,7 +59,7 @@ class BaseAtlasClient:
                 fn = lambda x: self.get_one(*x)
                 futures = as_completed(executor.submit(fn, x) for x in queue)
                 if self.progress:
-                    futures = tqdm(futures, endpoint, total=len(queue), leave=False)
+                    futures = track(futures, description=endpoint, total=len(queue))
                 for future in futures:
                     res, _ = future.result()
                     results.extend(res)

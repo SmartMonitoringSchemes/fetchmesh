@@ -4,7 +4,7 @@ from pathlib import Path
 from traceback import print_exc
 
 import click
-from tqdm import tqdm
+from rich.progress import track
 
 from ..atlas import MeasurementAF, MeasurementType
 from ..ext import DateParseParamType, EnumChoice, PathParamType, bprint, format_args
@@ -202,7 +202,7 @@ def fetch(**args):
     with ProcessPoolExecutor(args["jobs"]) as executor:
         # TODO: Retry on error
         futures = [executor.submit(fetcher.fetch, meta) for meta in metas]
-        futures = tqdm(as_completed(futures), total=len(metas))
+        futures = track(as_completed(futures), total=len(metas))
         for future in futures:
             try:
                 future.result()
