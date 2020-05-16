@@ -85,13 +85,13 @@ class AtlasRecordsReader:
             print_exception(exc_type, exc_value, traceback)
 
     @classmethod
-    def all(cls, files):
+    def all(cls, files, **kwargs):
         for file in files:
-            with cls(Path(file)) as rdr:
+            with cls(Path(file), **kwargs) as rdr:
                 for record in rdr:
                     yield record
 
     @classmethod
-    def glob(cls, path, pattern):
+    def glob(cls, path, pattern, **kwargs):
         files = Path(path).glob(pattern)
-        return cls.all(files)
+        return cls.all(files, **kwargs)
