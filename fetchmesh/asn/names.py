@@ -25,7 +25,7 @@ class ASNames:
 
         def fn():
             with urlopen(url) as f:
-                return f.read().decode("utf-8")
+                return f.read().decode("ISO8859-1")
 
         content = cache.get(url, fn)
         return cls.from_str(content)
