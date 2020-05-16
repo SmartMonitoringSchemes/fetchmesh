@@ -30,6 +30,7 @@ from ..utils import groupby_stream
 @click.argument("source", required=True, type=PathParamType())
 @click.argument("dest", default=".", type=PathParamType())
 # TODO: Implement parallel processing
+# => Hard because we don't know pairs in advance.
 def unpack(**args):
     """
     Split measurement results by pairs.
@@ -67,7 +68,7 @@ def unpack(**args):
 
     # TODO: Cleanup dir before
     for (msm_id, metas) in track(index.items()):
-        for meta in track(metas):
+        for meta in metas:
             key = lambda x: (x["msm_id"], x["prb_id"])
             file = args["source"].joinpath(meta.filename())
             with AtlasRecordsReader(file) as r:
