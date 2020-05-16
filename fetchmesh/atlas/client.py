@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 import requests
 from rich.progress import track
 
-from .cache import Cache
+from ..cache import Cache
 
 ATLAS_API_URL = "https://atlas.ripe.net/api/v2"
 
