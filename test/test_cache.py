@@ -1,4 +1,4 @@
-from fetchmesh.atlas import Cache
+from fetchmesh.cache import Cache
 
 
 def test_get():
