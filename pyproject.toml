@@ -17,6 +17,7 @@ requests = "^2.22.0"
 rich = "^1.1.1"
 tableformatter = "^0.1.4"
 zstandard = "^0.12.0"
+py-radix = "^0.10.0"
 
 [tool.poetry.dev-dependencies]
 # https://github.com/python-poetry/poetry/issues/649

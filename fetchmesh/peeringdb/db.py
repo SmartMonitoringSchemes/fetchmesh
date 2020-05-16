@@ -1,20 +1,32 @@
 from dataclasses import dataclass
 from typing import List
 
+from radix import Radix
+
 from ..utils import groupby
 from .client import PeeringDBClient
 from .objects import IX, LAN, Prefix
 
 
+# TODO: Better structure?
+# (Embed names, remove ids from prefixes ...)
 @dataclass(frozen=True)
 class Object:
     ix: IX
-    pfxs: List[Prefix]
+    prefixes: List[Prefix]
 
 
 class PeeringDB:
     def __init__(self, objects: List[Object]):
         self.objects = objects
+
+    def radix_tree(self):
+        rtree = Radix()
+        for obj in self.objects:
+            for prefix in obj.prefixes:
+                rnode = rtree.add(prefix.prefix)
+                rnode.data["ix"] = obj.ix
+        return rtree
 
     @classmethod
     def from_api(cls, client=PeeringDBClient()):
@@ -37,4 +49,4 @@ class PeeringDB:
                 pfxs_.extend(pfxs_by_lan[lan.id])
             objects.append(Object(ix, pfxs_))
 
-        return objects
+        return PeeringDB(objects)
