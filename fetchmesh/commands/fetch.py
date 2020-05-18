@@ -75,6 +75,13 @@ def default_dir(
     help="Remove measurements where the src and dst probe are equal",
 )
 @click.option(
+    "--only-self",
+    default=False,
+    show_default=True,
+    is_flag=True,
+    help="Remove measurements where the src and dst probe are *not* equal",
+)
+@click.option(
     "--half",
     default=False,
     show_default=True,
@@ -155,6 +162,8 @@ def fetch(**args):
         filters.append(HalfPairFilter())
     if args["no_self"]:
         filters.append(SelfPairFilter())
+    if args["only_self"]:
+        filters.append(SelfPairFilter(reverse=True))
     if args["sample_pairs"]:
         # This filter must be last
         filters.append(PairSampler(args["sample_pairs"]))

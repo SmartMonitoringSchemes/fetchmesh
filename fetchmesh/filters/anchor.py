@@ -83,5 +83,12 @@ class HalfPairFilter(AnchorPairFilter):
 
 
 class SelfPairFilter(AnchorPairFilter):
+    # reverse = False: drop self pairs
+    # reverse = True: keep only self pairs
+    def __init__(self, reverse=False):
+        self.reverse = reverse
+
     def filter(self, data):
+        if self.reverse:
+            return [x for x in data if x[0] == x[1]]
         return [x for x in data if x[0] != x[1]]
