@@ -64,6 +64,9 @@ class AtlasRecordsReader:
     filters: List[StreamFilter[dict]] = field(default_factory=list)
     transformers: List[RecordTransformer] = field(default_factory=list)
 
+    def __post_init__(self):
+        self.file = Path(self.file)
+
     def __enter__(self):
         codec = detect_codec(self.file)
         self.f = self.file.open("rb")
