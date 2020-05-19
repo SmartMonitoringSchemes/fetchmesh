@@ -107,4 +107,5 @@ poetry.lock
 # fetchmesh output
 ping_v*
 traceroute_v*
+mesh.json
 pairs.json

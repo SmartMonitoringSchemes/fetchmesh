@@ -17,6 +17,13 @@ def test_pairs_json():
     assert pairsp == pairs
 
 
-# TODO: Check that only one measurement
+def test_mesh_json():
+    mesh = AnchoringMesh.from_api()
+    mesh.to_json("mesh.json")
+    meshp = mesh.from_json("mesh.json")
+    assert meshp == mesh
+
+
+# TODO: Check that we find only one measurement
 def test_find_measurement():
     pass

@@ -8,6 +8,12 @@ from .atlas import AtlasAnchor, AtlasClient, AtlasMeasurement
 from .filters import AnchorFilter, MeasurementFilter
 
 
+def serialize(o):
+    if isinstance(o, AtlasAnchor) or isinstance(o, AtlasMeasurement):
+        return o.to_dict()
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+
+
 class AnchoringMeshPairs:
     """
     Anchoring Mesh pairs container.
@@ -64,19 +70,13 @@ class AnchoringMeshPairs:
     @classmethod
     def from_json(cls, path):
         with open(path) as f:
-            d = json.load(f)
-        # TODO: Custom JSON encoder instead ?
-        # TODO: See how it is done in locomotive
-        pairs = [
-            (AtlasAnchor.from_dict(pair[0]), AtlasAnchor.from_dict(pair[1]))
-            for pair in d
-        ]
-        return cls(pairs)
+            d = json.load(f, object_hook=AtlasAnchor.from_dict)
+        d = [tuple(x) for x in d]
+        return cls(d)
 
     def to_json(self, path):
         with open(path, "w") as f:
-            d = [[anchor.to_dict() for anchor in pair] for pair in self._pairs]
-            json.dump(d, f)
+            json.dump(self._pairs, f, default=serialize)
 
 
 class AnchoringMesh:
@@ -105,6 +105,9 @@ class AnchoringMesh:
 
     def __init__(self, data):
         self._data = data
+
+    def __eq__(self, o):
+        return (self.anchors == o.anchors) and (self.measurements == o.measurements)
 
     @cached_property
     def anchors(self):
@@ -164,8 +167,12 @@ class AnchoringMesh:
     def from_json(cls, path):
         with open(path) as f:
             data = json.load(f)
+        data = [
+            (AtlasAnchor.from_dict(x1), AtlasMeasurement.from_dict(x2))
+            for x1, x2 in data
+        ]
         return cls(data)
 
     def to_json(self, path):
         with open(path, "w") as f:
-            json.dump(self._data, f)
+            json.dump(self._data, f, default=serialize)

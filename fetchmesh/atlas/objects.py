@@ -183,3 +183,20 @@ class AtlasMeasurement:
             d["description"],
             tuple(d["tags"]),
         )
+
+    def to_dict(self):
+        start_time = None
+        if self.start_date:
+            start_time = int(self.start_date.timestamp())
+        when = None
+        if self.stop_date:
+            when = int(self.stop_date.timestamp())
+        return {
+            "id": self.id,
+            "af": self.af.value,
+            "type": self.type.value,
+            "tags": self.tags,
+            "description": self.description,
+            "start_time": start_time,
+            "status": {"id": self.status.value, "when": when},
+        }
