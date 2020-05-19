@@ -3,9 +3,13 @@
 # - https://github.com/maxmouchet/goasn
 # Handles multiple origin ASes (from goasn)
 from dataclasses import dataclass
+from io import TextIOWrapper
 from typing import Mapping
 
 from radix import Radix
+from zstandard import ZstdDecompressor
+
+from ..io import detect_codec
 
 
 class ASNDB:
@@ -22,7 +26,14 @@ class ASNDB:
     @classmethod
     def from_file(cls, file):
         data = []
-        with open(file) as f:
+        # TODO: Unified "file loader"
+        # (detect_codec is used is many place)
+        codec = detect_codec(file)
+        with open(file, "rb") as f:
+            if codec == "zstd":
+                ctx = ZstdDecompressor()
+                f = ctx.stream_reader(f)
+            f = TextIOWrapper(f, "utf-8")
             for line in f:
                 if line.startswith(";"):
                     continue
