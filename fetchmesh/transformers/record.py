@@ -98,6 +98,11 @@ class TracerouteFlatIPTransformer(RecordTransformer):
     List of additional response fields to include (e.g. `asn`, `ix` ...)
     """
 
+    insert_none: bool = True
+    """
+    Insert `None` if the `from` (or extra) field is absent.
+    """
+
     @staticmethod
     @lru_cache(maxsize=65536)
     def is_private(addr: str) -> bool:
@@ -120,9 +125,12 @@ class TracerouteFlatIPTransformer(RecordTransformer):
                 addr = reply.get("from")
                 if self.drop_private and addr and self.is_private(addr):
                     addr = None
-                addrs.append(addr)
+                if self.insert_none or addr != None:
+                    addrs.append(addr)
                 for field in self.extras_fields:
-                    extras_[field].append(reply.get(field))
+                    val = reply.get(field)
+                    if self.insert_none or val != None:
+                        extras_[field].append(val)
             if self.as_set:
                 addrs = set(addrs)  # type: ignore
                 extras_ = {k: set(v) for k, v in extras_.items()}  # type: ignore
