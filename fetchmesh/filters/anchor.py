@@ -5,13 +5,21 @@ from typing import List, Union
 
 from ..atlas import AtlasAnchor, AtlasAnchorPair
 from ..utils import groupby_pairs, sample_groups
-from .abstract import BatchFilter
+from .abstract import BatchFilter, StreamFilter
 
 # TODO: AS sampler
 
 
-class AnchorFilter(BatchFilter[AtlasAnchor]):
+class AnchorFilter(StreamFilter[AtlasAnchor]):
     pass
+
+
+@dataclass
+class AnchorRegionFilter(AnchorFilter):
+    region: str
+
+    def keep(self, x):
+        return x.country.main_region == self.region
 
 
 # @dataclass(frozen=True)

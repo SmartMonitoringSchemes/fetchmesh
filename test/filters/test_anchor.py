@@ -1,8 +1,21 @@
-from hypothesis import given
-
 from fetchmesh.atlas import AtlasAnchor, Country
-from fetchmesh.filters import HalfPairFilter, PairRegionSampler
+from fetchmesh.filters import AnchorRegionFilter, HalfPairFilter, PairRegionSampler
+from hypothesis import given
 from strategies import atlas_results_metas
+
+
+def test_anchor_region_filter():
+    anchors = [
+        AtlasAnchor(1, 1, "1", Country("FR"), None, None),
+        AtlasAnchor(2, 2, "2", Country("FR"), None, None),
+        AtlasAnchor(3, 3, "3", Country("FR"), None, None),
+        AtlasAnchor(4, 4, "4", Country("NL"), None, None),
+        AtlasAnchor(5, 5, "5", Country("NL"), None, None),
+        AtlasAnchor(6, 6, "6", Country("NL"), None, None),
+        AtlasAnchor(7, 7, "7", Country("US"), None, None),
+    ]
+    f = AnchorRegionFilter("Europe")
+    assert f(anchors) == anchors[:-1]
 
 
 def test_half_pair_filter():

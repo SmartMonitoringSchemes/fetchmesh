@@ -10,6 +10,7 @@ from ..atlas import MeasurementAF, MeasurementType
 from ..ext import DateParseParamType, EnumChoice, PathParamType, bprint, format_args
 from ..fetcher import SingleFileFetcher
 from ..filters import (
+    AnchorRegionFilter,
     HalfPairFilter,
     MeasurementDateFilter,
     MeasurementTypeFilter,
@@ -60,6 +61,13 @@ def default_dir(
     show_default=True,
     type=DateParseParamType(),
     help="Results stop date",
+)
+@click.option(
+    "--region",
+    default=None,
+    metavar="REGION",
+    type=str,
+    help="Keep only anchors located in the specified region (e.g Europe)",
 )
 @click.option(
     "--split", metavar="HOURS", type=int, help="Split the results files every X hours"
@@ -154,6 +162,8 @@ def fetch(**args):
             MeasurementDateFilter.running(start_date, stop_date),
             MeasurementTypeFilter(args["af"], args["type"]),
         ]
+        if args["region"]:
+            filters.append(AnchorRegionFilter(args["region"]))
         for f in filters:
             mesh = mesh.filter(f)
             bprint(f"Anchors > {type(f).__name__}", len(mesh.anchors))
