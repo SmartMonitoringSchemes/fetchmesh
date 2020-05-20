@@ -59,12 +59,15 @@ class UnpackWorker:
     help="Number of parallel jobs to run",
 )
 @click.argument("src", required=True, type=PathParamType())
-@click.argument("dst", default=".", type=PathParamType())
+@click.argument("dst", required=False, type=PathParamType())
 def unpack(**args):
     """
     Split measurement results by pairs.
     """
     bprint("Args", format_args(args))
+
+    if not args["dst"]:
+        args["dst"] = args["src"].with_name(args["src"].name + "_pairs")
 
     args["dst"].mkdir(exist_ok=True, parents=True)
 
