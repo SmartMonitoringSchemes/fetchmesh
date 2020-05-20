@@ -192,7 +192,7 @@ def fetch(**args):
         bprint(f"Pairs File", pairs_file)
         pairs.to_json(pairs_file)
         bprint(f"Meta File", meta_file)
-        args_blacklist = {"sample_pairs", "save_pairs"}
+        args_blacklist = {"dry_run", "sample_pairs", "save_pairs"}
         args_fetch = {k: v for k, v in args.items() if k not in args_blacklist}
         args_fetch["load_pairs"] = pairs_file
         meta_str = f"# Run this file with `bash {meta_file}`."
