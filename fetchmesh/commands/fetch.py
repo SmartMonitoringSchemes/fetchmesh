@@ -114,7 +114,11 @@ def default_dir(
     help="Compress results using zstd",
 )
 @click.option(
-    "--save-pairs", type=PathParamType(), help="Save selected pairs to file",
+    "--save-pairs",
+    default=False,
+    show_default=True,
+    is_flag=True,
+    help="Save metadata (`$dir.meta`) and pairs (`$dir.pairs`) for reproducibility.",
 )
 @click.option(
     "--load-pairs",
@@ -173,8 +177,21 @@ def fetch(**args):
         bprint(f"Pairs > {type(f).__name__}", len(pairs))
 
     if args["save_pairs"]:
-        bprint(f"Pairs File", args["save_pairs"])
-        pairs.to_json(str(args["save_pairs"]))
+        pairs_file = outdir.with_suffix(".pairs")
+        meta_file = outdir.with_suffix(".meta")
+        bprint(f"Pairs File", pairs_file)
+        pairs.to_json(pairs_file)
+        bprint(f"Meta File", meta_file)
+        args_blacklist = {"sample_pairs", "save_pairs"}
+        args_fetch = {k: v for k, v in args.items() if k not in args_blacklist}
+        args_fetch["load_pairs"] = pairs_file
+        meta_str = f"# Run this file with `bash {meta_file}`."
+        meta_str += f"\n# Generated on {dt.datetime.now()}."
+        meta_str += f"\n# Command that generated this file:"
+        meta_str += f"\n# fetchmesh fetch {format_args(args)}"
+        meta_str += f"\n# Command to fetch the results:"
+        meta_str += f"\nfetchmesh fetch {format_args(args_fetch)}"
+        meta_file.write_text(meta_str)
 
     if args["split"]:
         split = dt.timedelta(hours=args["split"])
