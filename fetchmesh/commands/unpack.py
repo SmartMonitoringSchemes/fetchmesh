@@ -92,6 +92,10 @@ def unpack(**args):
         if args["stop_date"]:
             metas = [m for m in metas if m.stop_date <= args["stop_date"]]
         metas = sorted(metas, key=lambda x: x.start_date)
+        if not metas:
+            # Why !?
+            print(f"No meta for #{msm_id}")
+            continue
         for i in range(1, len(metas)):
             if metas[i - 1].stop_date != metas[i].start_date:
                 raise ValueError(f"{metas[i-1].stop_date} != {metas[i].start_date}")
