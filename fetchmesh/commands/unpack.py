@@ -21,12 +21,13 @@ class UnpackWorker:
         seen = set()
         key = lambda x: (x["msm_id"], x["prb_id"])
         for meta in sorted(metas, key=lambda x: x.start_date):
-            base, suffix = meta.filename.split(".", maxsplit=1)
             file = self.src.joinpath(meta.filename)
             with AtlasRecordsReader(file) as r:
                 r = filter(lambda x: x, r)  # Cleanup this.
                 for pair, records in groupby_stream(r, key, 10 ** 6):
-                    name = f"{base}_{pair[1]}.{suffix}"
+                    name = "{}_v{}_{}_{}.ndjson".format(
+                        meta.type.value, meta.af.value, pair[0], pair[1]
+                    )
                     file = self.dst.joinpath(name)
                     # Overwrite mode: ensure that there is no prior file.
                     if self.mode == "overwrite" and not pair in seen:
