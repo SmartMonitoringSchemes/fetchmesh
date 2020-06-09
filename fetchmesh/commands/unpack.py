@@ -18,15 +18,23 @@ class UnpackWorker:
         self.mode = mode
 
     def do(self, metas):
-        seen = set()
+        metas = sorted(metas, key=lambda x: x.start_date)
+        start_timestamp = metas[0].start_timestamp
+        stop_timestamp = metas[-1].stop_timestamp
         key = lambda x: (x["msm_id"], x["prb_id"])
-        for meta in sorted(metas, key=lambda x: x.start_date):
+        seen = set()
+        for meta in metas:
             file = self.src.joinpath(meta.filename)
             with AtlasRecordsReader(file) as r:
                 r = filter(lambda x: x, r)  # Cleanup this.
                 for pair, records in groupby_stream(r, key, 10 ** 6):
-                    name = "{}_v{}_{}_{}.ndjson".format(
-                        meta.type.value, meta.af.value, pair[0], pair[1]
+                    name = "{}_v{}_{}_{}_{}_{}.ndjson".format(
+                        meta.type.value,
+                        meta.af.value,
+                        start_timestamp,
+                        stop_timestamp,
+                        pair[0],
+                        pair[1],
                     )
                     file = self.dst.joinpath(name)
                     # Overwrite mode: ensure that there is no prior file.
@@ -66,7 +74,7 @@ class UnpackWorker:
 )
 @click.option(
     "--mode",
-    default="overwrite",
+    default="skip",
     show_default=True,
     type=click.Choice(["append", "overwrite", "skip"]),
 )
@@ -100,11 +108,7 @@ def unpack(**args):
 
     bprint("Measurements", len(index))
 
-    # (2) Sort
-    for msm_id in index:
-        index[msm_id] = sorted(index[msm_id], key=lambda x: x.start_date)
-
-    # (3) Unpack
+    # (2) Unpack
     worker = UnpackWorker(args["src"], args["dst"], args["mode"])
     # NOTE: Parallel processing is safe here since we process metadata sequentially
     # for a given measurement ID, and file names contains msm_id and prb_id.
