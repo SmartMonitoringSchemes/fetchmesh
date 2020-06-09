@@ -1,4 +1,5 @@
 import logging
+from typing import List, Tuple
 
 from .atlas import AtlasClient
 from .io import AtlasRecordsWriter
@@ -14,12 +15,13 @@ class Fetcher:
 
 
 class SingleFileFetcher(Fetcher):
-    def fetch(self, meta: AtlasResultsMeta):
-        file = self.outdir.joinpath(meta.filename())
+    def fetch(self, args: Tuple[AtlasResultsMeta, List[int]]):
+        # TODO: `Job` NamedTuple instead?
+        meta, probes = args
+        file = self.outdir.joinpath(meta.filename)
         if file.exists():
             self.logger.debug("%s already exists, skipping...", file)
             return
-
-        it = self.client.fetch_results_stream(meta.remote_path)
+        it = self.client.fetch_results_stream(meta.remote_path(probes))
         with AtlasRecordsWriter(file, self.filters, meta.compressed) as w:
             w.writeall(it)

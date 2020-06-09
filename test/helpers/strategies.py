@@ -1,5 +1,7 @@
 import datetime as dt
 
+from fetchmesh.atlas import MeasurementAF, MeasurementType
+from fetchmesh.meta import AtlasResultsMeta
 from hypothesis import assume
 from hypothesis.strategies import (
     booleans,
@@ -11,9 +13,6 @@ from hypothesis.strategies import (
     one_of,
     sampled_from,
 )
-
-from fetchmesh.atlas import MeasurementAF, MeasurementType
-from fetchmesh.meta import AtlasResultsMeta
 
 
 @composite
@@ -43,8 +42,5 @@ def atlas_results_metas(draw):
         msm_id=draw(integers()),
         start_date=start_date,
         stop_date=stop_date,
-        anchors_only=draw(booleans()),
         compressed=draw(booleans()),
-        format=draw(sampled_from(["json", "txt"])),
-        probes=draw(lists(integers(), max_size=2000)),
     )

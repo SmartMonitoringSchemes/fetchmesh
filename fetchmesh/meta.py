@@ -1,7 +1,6 @@
 import datetime as dt
 import re
 from dataclasses import dataclass
-from typing import List, Optional
 from urllib.parse import urlencode
 
 from .atlas import MeasurementAF, MeasurementType
@@ -23,56 +22,20 @@ class AtlasResultsMeta:
     start_date: dt.datetime
     stop_date: dt.datetime
 
-    anchors_only: bool
     compressed: bool
-    format: str
 
-    # Optional source probes filter
-    # TODO: explicit "all", and "unknown" if not provided
-    # (e.g. using from_filename())
-    probes: List[int]
+    PATTERN = re.compile(r"(\w+)_v(\d)_(-?\d+)_(-?\d+)_(-?\d+)\.([\.\w]+)")
 
-    EXTENSIONS = {"json": "json", "txt": "ndjson"}
-
-    FORMATS = {v: k for k, v in EXTENSIONS.items()}
-
-    PATTERN = re.compile(r"(\w+)_v(\d)_(-?\d+)_(-?\d+)_(-?\d+)_(\w+)\.([\.\w]+)")
-
-    def filename(self, prb_id: Optional[int] = None) -> str:
-        content_str = "full"
-        if prb_id:
-            # TODO: Implement in from_filename
-            content_str = str(prb_id)
-        elif self.anchors_only:
-            content_str = "anchors"
-
-        extension = self.EXTENSIONS[self.format]
-        if self.compressed:
-            extension += ".zst"
-
-        return "{}_v{}_{}_{}_{}_{}.{}".format(
-            self.type.value,
-            self.af.value,
-            self.start_timestamp,
-            self.stop_timestamp,
-            self.msm_id,
-            content_str,
-            extension,
-        )
-
-    @property
-    def remote_path(self) -> str:
+    def remote_path(self, probes=[]) -> str:
         path = f"/measurements/{self.msm_id}/results"
         params = {
-            "format": self.format,
+            "anchors-only": True,
+            "format": "txt",
             "start": self.start_timestamp,
             "stop": self.stop_timestamp,
         }
-        # Not supported by the API if set to False
-        if self.anchors_only:
-            params["anchors-only"] = True
-        if self.probes:
-            params["probe_ids"] = ",".join(str(x) for x in self.probes)
+        if probes:
+            params["probe_ids"] = ",".join(str(x) for x in probes)
         return f"{path}?{urlencode(params)}"
 
     @property
@@ -83,28 +46,29 @@ class AtlasResultsMeta:
     def stop_timestamp(self) -> int:
         return int(self.stop_date.timestamp())
 
+    @property
+    def filename(self) -> str:
+        extension = "ndjson"
+        if self.compressed:
+            extension += ".zst"
+        return "{}_v{}_{}_{}_{}.{}".format(
+            self.type.value,
+            self.af.value,
+            self.start_timestamp,
+            self.stop_timestamp,
+            self.msm_id,
+            extension,
+        )
+
     @classmethod
-    def from_filename(cls, name: str, probes: List[int] = []):
+    def from_filename(cls, name: str):
         m = unwrap(cls.PATTERN.search(name))
-
-        anchors_only = m.group(6) == "anchors"
-        extension = m.group(7)
-        compressed = False
-
-        if extension[-4:] == ".zst":
-            compressed = True
-            extension = extension[:-4]
-
-        format_ = cls.FORMATS[extension]
-
+        type, af, start_timestamp, stop_timestamp, msm_id, extension = m.groups()
         return cls(
-            MeasurementAF(int(m.group(2))),
-            MeasurementType(m.group(1)),
-            int(m.group(5)),
-            unwrap(parsetimestamp(m.group(3))),
-            unwrap(parsetimestamp(m.group(4))),
-            anchors_only,
-            compressed,
-            format_,
-            probes,
+            MeasurementAF(int(af)),
+            MeasurementType(type),
+            int(msm_id),
+            unwrap(parsetimestamp(start_timestamp)),
+            unwrap(parsetimestamp(stop_timestamp)),
+            extension.endswith(".zst"),
         )

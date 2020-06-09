@@ -1,9 +1,12 @@
+import atexit
 import datetime as dt
+import signal
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from traceback import print_exc
 
 import click
+import psutil
 from tqdm import tqdm
 
 from ..atlas import MeasurementAF, MeasurementType
@@ -20,6 +23,17 @@ from ..filters import (
 from ..mesh import AnchoringMesh, AnchoringMeshPairs
 from ..meta import AtlasResultsMeta
 from ..utils import daterange, totimestamp
+
+
+def cleanup():
+    # The hardcore way...
+    # multiprocessing is buggy and leaves zombies everywhere...
+    parent = psutil.Process()
+    children = parent.children(recursive=True) + [parent]
+    for child in children:
+        print("Sending SIGTERM to {}".format(child.pid))
+        child.send_signal(signal.SIGTERM)
+    psutil.wait_procs(children)
 
 
 def default_dir(
@@ -220,12 +234,9 @@ def fetch(**args):
                 measurement.id,
                 date,
                 date + split,
-                True,
                 args["compress"],
-                "txt",
-                probes,
             )
-            metas.append(meta)
+            metas.append((meta, probes))
 
     fetcher = SingleFileFetcher(outdir)
 
@@ -234,9 +245,10 @@ def fetch(**args):
         return
 
     outdir.mkdir(exist_ok=True, parents=True)
+    atexit.register(cleanup)
 
     with ProcessPoolExecutor(args["jobs"]) as executor:
-        # TODO: Retry on error
+        # Should we retry on error?
         futures = [executor.submit(fetcher.fetch, meta) for meta in metas]
         futures = tqdm(as_completed(futures), total=len(metas))
         for future in futures:
@@ -244,3 +256,5 @@ def fetch(**args):
                 future.result()
             except:
                 print_exc()
+
+    atexit.unregister(cleanup)
