@@ -63,8 +63,8 @@ def ping(files, dir, mode):
     ----------
 
     \b
-    pair | rtt_t1 | rtt_t2 | rtt_t3 | ...
-    -----|--------|--------|--------|----
+    msm_id | prb_id | from_ip | to_ip | rtt_t1 | rtt_t2 | rtt_t3 | ...
+    -------|--------|---------|-------|--------|--------|--------|----
     """
     bprint("Output directory", dir)
     bprint("Mode", mode)
@@ -72,7 +72,7 @@ def ping(files, dir, mode):
     # 1. We start by splitting the results by pairs.
     # We do this on disk to save memory, and to sort
     # the data in a single pass.
-    key = lambda x: (x["msm_id"], x["prb_id"])
+    key = lambda x: (x["msm_id"], x["prb_id"], x["from"], x["dst_addr"])
     tmp = TemporaryDirectory()
     tmpfiles = {}
 
@@ -99,11 +99,9 @@ def ping(files, dir, mode):
     for pair, file in tqdm(tmpfiles.items(), desc="resample"):
         with AtlasRecordsReader(file) as r:
             df = DataFrame.from_records(r, columns=["timestamp", "min"])
-            # Set index to timestamp
-            df.timestamp = df.timestamp.astype("datetime64[s]")
-            df.set_index("timestamp", inplace=True)
+            df = df.astype({"timestamp": "datetime64[s]"}).set_index("timestamp")
             # Replace _missing_ values
-            df[df["min"] <= 0.0] = None
+            df.loc[df["min"] <= 0.0, "min"] = None
             # Resample
             df = df.resample(Timedelta(240, unit="seconds")).min()
             frames[pair] = df
@@ -119,18 +117,18 @@ def ping(files, dir, mode):
 
     # 3b. In merge mode, we concatenate these frames and write them to CSVs.
     if mode == "merge":
-        # timestamp, min, min, min, ...
-        df = concat(frames.values(), axis=1).reset_index()
-        timestamps = df.timestamp.apply(lambda x: int(x.timestamp()))
-        # min, min, min, min
-        df.drop("timestamp", axis=1, inplace=True)
-        # pair1, pair2, pair3, ...
-        df.columns = ["_".join(map(str, x)) for x in frames.keys()]
-        # index, 0, 1, 2, 3 ...
-        df = df.transpose().reset_index()
-        # pair, t1, t2, t3,...
-        df.columns = ["pair"] + timestamps.tolist()
+        # TODO: Cleanup this
+        # Index df
+        idf = DataFrame.from_records(
+            list(frames.keys()), columns=["msm_id", "prb_id", "from_ip", "to_ip"]
+        )
+        # Values df
+        vdf = concat([x.T for x in frames.values()])
+        vdf.reset_index(drop=True, inplace=True)
+        vdf.columns = [int(x.timestamp()) for x in vdf.columns]
+        # Concat and save
         name = f"merge_{int(dt.datetime.now().timestamp())}.csv"
+        df = concat([idf, vdf], axis=1)
         df.to_csv(name, index=False)
 
 
@@ -154,8 +152,8 @@ def traceroute(files, drop_private):
 
 
     \b
-    timestamp | pair | paris_id | hop1_1 | ... | hop32_3
-    ----------|------|----------|--------|-----|--------
+    timestamp | msm_id | prb_id | from_ip | to_ip | paris_id | hop1_1 | ... | hop32_3
+    ----------|--------|--------|---------|-------|----------|--------|-----|--------
     """
     tfip = TracerouteFlatIPTransformer(
         drop_dup=True, drop_late=True, drop_private=drop_private
@@ -167,7 +165,17 @@ def traceroute(files, drop_private):
     reader = AtlasRecordsReader.all(files)
 
     hops = [[f"hop{i}_{j}" for j in range(1, 4)] for i in range(1, 33)]
-    writer.writerow(["timestamp", "pair", "paris_id", *itertools.chain(*hops)])
+    writer.writerow(
+        [
+            "timestamp",
+            "msm_id",
+            "prb_id",
+            "from_ip",
+            "to_ip",
+            "paris_id",
+            *itertools.chain(*hops),
+        ]
+    )
 
     for record in tqdm(reader, desc=""):
         record = tfip(record)
@@ -181,7 +189,10 @@ def traceroute(files, drop_private):
 
         row = (
             record["timestamp"],
-            record["from"] + "_" + record["dst_addr"],
+            record["msm_id"],
+            record["prb_id"],
+            record["from"],
+            record["dst_addr"],
             record["paris_id"],
             *itertools.chain(*hops),
         )

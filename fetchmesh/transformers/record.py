@@ -140,6 +140,8 @@ class TracerouteFlatIPTransformer(RecordTransformer):
 
         return {
             "timestamp": record["timestamp"],
+            "msm_id": record["msm_id"],
+            "prb_id": record["prb_id"],
             "from": record["from"],
             "src_addr": record["src_addr"],
             "dst_addr": record["dst_addr"],
