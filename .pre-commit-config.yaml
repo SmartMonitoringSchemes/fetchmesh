@@ -21,7 +21,9 @@ repos:
   hooks:
   - id: pylint
     # We disable import-error since this is run outside poetry venv.
-    args: [--errors-only, --disable=import-error, --disable=unsubscriptable-object]
+    # We also disable no-value-for-parameter:
+    # https://github.com/PyCQA/pylint/issues/259
+    args: [--errors-only, --disable=import-error, --disable=unsubscriptable-object, --disable=no-value-for-parameter]
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v2.4.0

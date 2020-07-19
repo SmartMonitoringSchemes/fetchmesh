@@ -1,9 +1,9 @@
 import datetime as dt
 
 from hypothesis import given
+from strategies import atlas_results_metas
 
 from fetchmesh.filters import MeasurementDateFilter, MeasurementTypeFilter
-from strategies import atlas_results_metas
 
 
 @given(meta=atlas_results_metas())

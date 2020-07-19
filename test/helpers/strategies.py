@@ -1,7 +1,5 @@
 import datetime as dt
 
-from fetchmesh.atlas import MeasurementAF, MeasurementType
-from fetchmesh.meta import AtlasResultsMeta
 from hypothesis import assume
 from hypothesis.strategies import (
     booleans,
@@ -13,6 +11,9 @@ from hypothesis.strategies import (
     one_of,
     sampled_from,
 )
+
+from fetchmesh.atlas import MeasurementAF, MeasurementType
+from fetchmesh.meta import AtlasResultsMeta
 
 
 @composite

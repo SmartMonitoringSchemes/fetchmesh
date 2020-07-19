@@ -1,7 +1,8 @@
-from fetchmesh.atlas import AtlasAnchor, Country
-from fetchmesh.filters import AnchorRegionFilter, HalfPairFilter, PairRegionSampler
 from hypothesis import given
 from strategies import atlas_results_metas
+
+from fetchmesh.atlas import AtlasAnchor, Country
+from fetchmesh.filters import AnchorRegionFilter, HalfPairFilter, PairRegionSampler
 
 
 def test_anchor_region_filter():

@@ -1,6 +1,7 @@
-from fetchmesh.meta import AtlasResultsMeta
 from hypothesis import given
 from strategies import atlas_results_metas
+
+from fetchmesh.meta import AtlasResultsMeta
 
 
 # pylint: disable=E1120
