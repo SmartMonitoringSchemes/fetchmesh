@@ -7,9 +7,6 @@
   <a href="https://github.com/maxmouchet/fetchmesh/actions">
     <img src="https://github.com/maxmouchet/fetchmesh/workflows/CI/badge.svg">
   </a>
-  <a href='https://coveralls.io/github/maxmouchet/fetchmesh?branch=master'>
-    <img src='https://coveralls.io/repos/github/maxmouchet/fetchmesh/badge.svg?branch=master&amp;t=jzx7fv' alt='Coverage Status' />
-  </a>
 </p>
 
 fetchmesh is a tool to simplify working with Atlas [anchoring mesh](https://atlas.ripe.net/about/anchors/) measurements. It can download results concurrently, process large files in streaming without requiring a large amount of memory, and clean measurement results. It uses Facebook [Zstandard](https://facebook.github.io/zstd/) algorithm for fast data compression.
