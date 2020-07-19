@@ -1,11 +1,11 @@
 <p align="center">
   <img src="/docs/logo.png" height="150"><br/>
   <i>Fetch and slice the RIPE Atlas anchoring mesh.</i><br/><br/>
-  <a href="https://maxmouchet.github.io/fetchmesh/stable">
-    <img src="https://img.shields.io/badge/docs-stable-blue.svg?style=flat">
-  </a>
   <a href="https://github.com/maxmouchet/fetchmesh/actions">
     <img src="https://github.com/maxmouchet/fetchmesh/workflows/CI/badge.svg">
+  </a>
+  <a href="https://maxmouchet.github.io/fetchmesh/stable">
+    <img src="https://img.shields.io/badge/docs-stable-blue.svg?style=flat">
   </a>
 </p>
 
