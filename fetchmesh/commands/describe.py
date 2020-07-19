@@ -29,7 +29,7 @@ def expected_pairs(n_anchors, no_self, half):
     "--date",
     default="now",
     show_default=True,
-    type=ParsedDate(),
+    type=ParsedDate(settings={"RETURN_AS_TIMEZONE_AWARE": True, "TIMEZONE": "UTC"}),
     help="Pairs should exist between `start-date` and `stop-date`.",
 )
 def describe(date):

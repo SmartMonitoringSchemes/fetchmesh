@@ -6,11 +6,13 @@ from hypothesis.strategies import (
     composite,
     datetimes,
     integers,
+    just,
     lists,
     none,
     one_of,
     sampled_from,
 )
+from pytz import UTC
 
 from fetchmesh.atlas import MeasurementAF, MeasurementType
 from fetchmesh.meta import AtlasResultsMeta
@@ -21,12 +23,16 @@ def atlas_datetimes(draw, **kwargs):
     def nomicrosecond(x):
         return x.replace(microsecond=0)
 
-    d = draw(datetimes(**kwargs).map(nomicrosecond))
+    d = draw(
+        datetimes(allow_imaginary=False, timezones=just(UTC), **kwargs).map(
+            nomicrosecond
+        )
+    )
 
     # https://github.com/HypothesisWorks/hypothesis/issues/2273
     # Folds and imaginary datetimes in the datetime strategy
     # Temporary solution to avoid imaginary dates.
-    assume(dt.datetime.fromtimestamp(d.timestamp()) == d)
+    # assume(dt.datetime.fromtimestamp(d.timestamp()) == d)
 
     return d
 
@@ -35,7 +41,7 @@ def atlas_datetimes(draw, **kwargs):
 def atlas_results_metas(draw):
     # pylint: disable=E1120
     start_date = draw(atlas_datetimes())
-    stop_date = draw(atlas_datetimes(min_value=start_date))
+    stop_date = draw(atlas_datetimes(min_value=start_date.replace(tzinfo=None)))
 
     return AtlasResultsMeta(
         af=draw(sampled_from(MeasurementAF)),

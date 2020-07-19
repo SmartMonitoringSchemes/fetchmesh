@@ -1,5 +1,7 @@
 import datetime
 
+from pytz import UTC
+
 from fetchmesh.atlas import (
     AtlasAnchor,
     AtlasMeasurement,
@@ -28,7 +30,7 @@ def test_measurement_dict():
         af=MeasurementAF.IPv4,
         type=MeasurementType.Traceroute,
         status=MeasurementStatus.Ongoing,
-        start_date=datetime.datetime(2018, 6, 16, 10, 41, 11),
+        start_date=datetime.datetime(2018, 6, 16, 10, 41, 11, tzinfo=UTC),
         stop_date=None,
         description="Anchoring Mesh Measurement: Traceroute IPv4 for anchor de-dus-as39138.anchors.atlas.ripe.net",
         tags=("6368", "de-dus-as39138", "mesh", "anchoring"),

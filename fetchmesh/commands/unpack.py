@@ -60,10 +60,14 @@ class UnpackWorker:
     "--type", type=EnumChoice(MeasurementType, str), help="Filter measurements type",
 )
 @click.option(
-    "--start-date", type=ParsedDate(), help="Results start date",
+    "--start-date",
+    type=ParsedDate(settings={"RETURN_AS_TIMEZONE_AWARE": True, "TIMEZONE": "UTC"}),
+    help="Results start date",
 )
 @click.option(
-    "--stop-date", type=ParsedDate(), help="Results stop date",
+    "--stop-date",
+    type=ParsedDate(settings={"RETURN_AS_TIMEZONE_AWARE": True, "TIMEZONE": "UTC"}),
+    help="Results stop date",
 )
 @click.option(
     "--jobs",
