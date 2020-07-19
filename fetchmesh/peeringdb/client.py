@@ -1,8 +1,7 @@
 import logging
 
 import requests
-
-from ..cache import Cache
+from mtoolbox.cache import Cache
 
 PEERINGDB_API_URL = "https://peeringdb.com/api"
 
@@ -12,7 +11,7 @@ class BasePeeringDBClient:
         self.base_url = base_url
         self.timeout = timeout
         self.logger = logging.getLogger(__name__)
-        self.cache = Cache()
+        self.cache = Cache("fetchmesh")
 
     def get(self, endpoint, **kwargs):
         url = f"{self.base_url}/{endpoint}"

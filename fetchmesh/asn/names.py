@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Mapping
 from urllib.request import urlopen
 
-from ..cache import Cache
+from mtoolbox.cache import Cache
 
 DEFAULT_NAMES_URL = "ftp://ftp.ripe.net/ripe/asnames/asn.txt"
 
@@ -21,7 +21,7 @@ class ASNames:
 
     @classmethod
     def from_url(cls, url=DEFAULT_NAMES_URL):
-        cache = Cache()
+        cache = Cache("fetchmesh")
 
         def fn():
             with urlopen(url) as f:

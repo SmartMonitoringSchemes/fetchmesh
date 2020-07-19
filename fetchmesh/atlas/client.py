@@ -5,9 +5,8 @@ from math import ceil
 from urllib.parse import urlencode
 
 import requests
+from mtoolbox.cache import Cache
 from tqdm import tqdm
-
-from ..cache import Cache
 
 ATLAS_API_URL = "https://atlas.ripe.net/api/v2"
 
@@ -32,7 +31,7 @@ class BaseAtlasClient:
         self.threads = threads
         self.timeout = timeout
         self.logger = logging.getLogger(__name__)
-        self.cache = Cache()
+        self.cache = Cache("fetchmesh")
 
     def encode_url(self, url, params):
         return f"{url}?{urlencode(params)}"
