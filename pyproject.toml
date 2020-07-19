@@ -12,52 +12,29 @@ cached-property = "^1.5.1"
 click = "^7.0"
 colorama = "^0.4.3"
 dateparser = "^0.7.2"
+mtoolbox = {extras = ["click"], git = "https://github.com/maxmouchet/mtoolbox.git", rev = "v0.1.0"}
 pandas = "^1.0.1"
+psutil = "^5.7.0"
+py-radix = "^0.10.0"
 requests = "^2.22.0"
 rich = "^1.1.1"
 tableformatter = "^0.1.4"
-zstandard = "^0.12.0"
-py-radix = "^0.10.0"
 tqdm = "^4.46.0"
-psutil = "^5.7.0"
-mtoolbox = {extras = ["click"], git = "https://github.com/maxmouchet/mtoolbox.git", rev = "v0.1.0"}
+zstandard = "^0.12.0"
 
 [tool.poetry.dev-dependencies]
-# https://github.com/python-poetry/poetry/issues/649
-# => This is required because there are no release versions of black at all.
-black = {version = "^19.10b0", allow-prereleases = true}
-coverage = {extras = ["toml"], version = "^5.0.1"}
-coveralls = "^1.10.0"
 hypothesis = "^4.55.2"
-mypy = "^0.761"
 pre-commit = "^1.21.0"
-# https://github.com/PyCQA/pylint/issues/617
-# => Search pylint configuration in setup.cfg and pyproject.toml
-# => This will be merged in pylint 2.5.0
-pylint = { git = "https://github.com/PyCQA/pylint.git", rev = "3fc8c98" }
-pytest = "^5.3"
+pytest = {git = "https://github.com/pytest-dev/pytest.git", rev = "6.0.0rc1"}
 pytest-cov = "^2.8"
 sphinx = "^2.3.1"
 sphinx-click = "^2.3.1"
-ipython = "^7.14.0"
 
 [tool.poetry.scripts]
 fetchmesh = 'fetchmesh.cli:cli'
 
-# TODO: Remove ipython, pylint, isort, ... from pyproject.toml
-[tool.pylint.messages_control]
-# https://github.com/psf/black/issues/48
-disable = "bad-continuation,invalid-name,fixme,missing-docstring,too-few-public-methods,unsubscriptable-object"
-
-[tool.isort]
-# https://github.com/timothycrosley/isort/issues/694
-# => Interopability with black
-# => https://github.com/psf/black#how-black-wraps-lines
-force_grid_wrap = 0
-include_trailing_comma = true
-multi_line_output = 3
-use_parentheses = true
-line_length = 88
+[tool.pytest.ini_options]
+addopts = "--cov=fetchmesh --cov-report=xml"
 
 [build-system]
 requires = ["poetry>=0.12"]

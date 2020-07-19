@@ -7,8 +7,8 @@ jobs:
   unit_tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
         with:
           python-version: '3.7'
 
@@ -17,19 +17,8 @@ jobs:
           pip install poetry
           poetry install
 
-      - name: Lint
-        run: poetry run pylint --errors-only --disable=E1136 fetchmesh
-
-      - name: Check types
-        run: poetry run mypy --ignore-missing-imports fetchmesh
-
       - name: Run tests
-        run: poetry run pytest --cov=fetchmesh
-
-      - name: Upload coverage
-        run: poetry run coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: poetry run pytest
 
   # Build package and verify that it installs
   # correctly on different OSes
@@ -41,8 +30,8 @@ jobs:
         python-version: ['3.7']
 
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 

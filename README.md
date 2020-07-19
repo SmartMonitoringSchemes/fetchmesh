@@ -118,10 +118,10 @@ poetry run make -C docs/ html
 
 Tool | Usage | Command
 -----|-------|--------
-[black](https://github.com/psf/black) | Code formatting | `poetry run black fetchmesh`
-[isort](https://github.com/timothycrosley/isort) | Import sorting | `poetry run isort -rc fetchmesh`
-[mypy](https://github.com/python/mypy) | Static typing | `poetry run mypy fetchmesh`
-[pylint](https://www.pylint.org/) | Linting | `poetry run pylint fetchmesh`
+[black](https://github.com/psf/black) | Code formatting | `poetry run pre-commit run --all-files`
+[isort](https://github.com/timothycrosley/isort) | Import sorting | `poetry run pre-commit run --all-files`
+[mypy](https://github.com/python/mypy) | Static typing | `poetry run pre-commit run --all-files`
+[pylint](https://www.pylint.org/) | Linting | `poetry run pre-commit run --all-files`
 [pytest](https://docs.pytest.org/en/latest/) | Unit tests | `poetry run pytest`
 
 ### Release
