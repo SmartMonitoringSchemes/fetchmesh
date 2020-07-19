@@ -23,18 +23,11 @@ def atlas_datetimes(draw, **kwargs):
     def nomicrosecond(x):
         return x.replace(microsecond=0)
 
-    d = draw(
+    return draw(
         datetimes(allow_imaginary=False, timezones=just(UTC), **kwargs).map(
             nomicrosecond
         )
     )
-
-    # https://github.com/HypothesisWorks/hypothesis/issues/2273
-    # Folds and imaginary datetimes in the datetime strategy
-    # Temporary solution to avoid imaginary dates.
-    # assume(dt.datetime.fromtimestamp(d.timestamp()) == d)
-
-    return d
 
 
 @composite
