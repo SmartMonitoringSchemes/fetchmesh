@@ -6,6 +6,7 @@ from pathlib import Path
 from traceback import print_exception
 from typing import Iterable, List
 
+from mtoolbox.magic import CompressionFormat, detect_compression
 from mtoolbox.optional import tryfunc
 from zstandard import ZstdCompressor, ZstdDecompressor
 
@@ -14,17 +15,6 @@ from .transformers import RecordTransformer
 
 json_trydumps = tryfunc(json.dumps, default="")
 json_tryloads = tryfunc(json.loads)
-
-
-def detect_codec(file):
-    with open(file, "rb") as f:
-        try:
-            h = struct.unpack("<I", f.read(4))[0]
-        except struct.error:
-            h = None
-    if h == 0xFD2FB528:
-        return "zstd"
-    return ""
 
 
 @dataclass
@@ -72,9 +62,9 @@ class AtlasRecordsReader:
         self.file = Path(self.file)
 
     def __enter__(self):
-        codec = detect_codec(self.file)
+        codec = detect_compression(self.file)
         self.f = self.file.open("rb")
-        if codec == "zstd":
+        if codec == CompressionFormat.Zstandard:
             ctx = ZstdDecompressor()
             self.f = ctx.stream_reader(self.f)
         self.f = TextIOWrapper(self.f, "utf-8")
