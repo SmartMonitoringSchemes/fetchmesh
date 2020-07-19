@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 
 from mtoolbox.datetime import parsetimestamp
 from mtoolbox.optional import unwrap
+from pytz import UTC
 
 from .atlas import MeasurementAF, MeasurementType
 
@@ -70,7 +71,7 @@ class AtlasResultsMeta:
             MeasurementAF(int(af)),
             MeasurementType(type),
             int(msm_id),
-            unwrap(parsetimestamp(start_timestamp)),
-            unwrap(parsetimestamp(stop_timestamp)),
+            unwrap(parsetimestamp(start_timestamp, UTC)),
+            unwrap(parsetimestamp(stop_timestamp, UTC)),
             extension.endswith(".zst"),
         )

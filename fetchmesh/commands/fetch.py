@@ -67,15 +67,15 @@ def default_dir(
     "--start-date",
     default="last week",
     show_default=True,
-    type=ParsedDate(),
-    help="Results start date",
+    type=ParsedDate(settings={"RETURN_AS_TIMEZONE_AWARE": True, "TIMEZONE": "UTC"}),
+    help="Results start date (UTC)",
 )
 @click.option(
     "--stop-date",
     default="now",
     show_default=True,
-    type=ParsedDate(),
-    help="Results stop date",
+    type=ParsedDate(settings={"RETURN_AS_TIMEZONE_AWARE": True, "TIMEZONE": "UTC"}),
+    help="Results stop date (UTC)",
 )
 @click.option(
     "--region",

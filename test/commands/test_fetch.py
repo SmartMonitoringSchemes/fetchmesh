@@ -26,7 +26,7 @@ def test_fetch_pairs():
         args += [
             "--dry-run",
             "--load-pairs",
-            "ping_v4_1546297200_1546383600.pairs",
+            "ping_v4_1546300800_1546387200.pairs",
         ]
 
         result = runner.invoke(cli, args)

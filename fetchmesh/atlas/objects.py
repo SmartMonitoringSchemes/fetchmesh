@@ -5,15 +5,10 @@ from enum import Enum
 from typing import Any, Optional, Tuple
 
 from cached_property import cached_property
+from mtoolbox.datetime import parsetimestamp
+from pytz import UTC
 
 from .countries import countries
-
-
-def parsetimestamp(x: Any) -> Optional[datetime]:
-    try:
-        return datetime.fromtimestamp(int(x))
-    except TypeError:
-        return None
 
 
 class MeasurementAF(Enum):
@@ -161,7 +156,7 @@ class AtlasMeasurement:
 
     @classmethod
     def from_dict(cls, d: dict):
-        start_date = parsetimestamp(d["start_time"])
+        start_date = parsetimestamp(d["start_time"], UTC)
         stop_date = None
 
         status = MeasurementStatus(d["status"]["id"])
@@ -171,7 +166,7 @@ class AtlasMeasurement:
             MeasurementStatus.Scheduled,
             MeasurementStatus.Ongoing,
         }:
-            stop_date = parsetimestamp(d["status"]["when"])
+            stop_date = parsetimestamp(d["status"]["when"], UTC)
 
         return cls(
             d["id"],
