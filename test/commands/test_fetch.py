@@ -16,11 +16,7 @@ def test_fetch_pairs():
         args = ["fetch", "--af", 4, "--type", "ping"]
         args += ["--sample-pairs", 0.01]
         args += ["--start-date", "2019-1-1", "--stop-date", "2019-1-2"]
-        args += [
-            "--dry-run",
-            "--save-pairs",
-            "ping_v4_1546297200_1546383600.pairs.json",
-        ]
+        args += ["--dry-run", "--save-pairs"]
 
         result = runner.invoke(cli, args)
         assert result.exit_code == 0
@@ -30,7 +26,7 @@ def test_fetch_pairs():
         args += [
             "--dry-run",
             "--load-pairs",
-            "ping_v4_1546297200_1546383600.pairs.json",
+            "ping_v4_1546297200_1546383600.pairs",
         ]
 
         result = runner.invoke(cli, args)
