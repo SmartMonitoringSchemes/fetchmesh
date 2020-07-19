@@ -1,37 +1,7 @@
 import datetime as dt
 from enum import Enum
-from pathlib import Path
 
 import click
-import dateparser as dp
-
-
-class DateParseParamType(click.ParamType):
-    name = "DATE"
-
-    def convert(self, value, param, ctx):
-        return dp.parse(value)
-
-
-class EnumChoice(click.ParamType):
-    def __init__(self, enum, type_):
-        self.enum = enum
-        self.type_ = type_
-
-    def convert(self, value, param, ctx):
-        return self.enum(self.type_(value))
-
-    @property
-    def name(self):
-        vals = [str(v.value) for v in self.enum.__members__.values()]
-        return f"[{'|'.join(vals)}]"
-
-
-class PathParamType(click.ParamType):
-    name = "PATH"
-
-    def convert(self, value, param, ctx):
-        return Path(value)
 
 
 # TODO: Don't print options (only args)

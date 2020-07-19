@@ -7,10 +7,12 @@ from traceback import print_exc
 
 import click
 import psutil
+from mtoolbox.click import EnumChoice, ParsedDate, PathParam
+from mtoolbox.datetime import datetimerange, totimestamp
 from tqdm import tqdm
 
 from ..atlas import MeasurementAF, MeasurementType
-from ..ext import DateParseParamType, EnumChoice, PathParamType, bprint, format_args
+from ..ext import bprint, format_args
 from ..fetcher import SingleFileFetcher
 from ..filters import (
     AnchorRegionFilter,
@@ -22,7 +24,6 @@ from ..filters import (
 )
 from ..mesh import AnchoringMesh, AnchoringMeshPairs
 from ..meta import AtlasResultsMeta
-from ..utils import daterange, totimestamp
 
 
 def cleanup():
@@ -66,14 +67,14 @@ def default_dir(
     "--start-date",
     default="last week",
     show_default=True,
-    type=DateParseParamType(),
+    type=ParsedDate(),
     help="Results start date",
 )
 @click.option(
     "--stop-date",
     default="now",
     show_default=True,
-    type=DateParseParamType(),
+    type=ParsedDate(),
     help="Results stop date",
 )
 @click.option(
@@ -119,7 +120,7 @@ def default_dir(
     help="Number of parallel jobs to run",
 )
 @click.option(
-    "--dir", type=PathParamType(), help="Output directory",
+    "--dir", type=PathParam(), help="Output directory",
 )
 @click.option(
     "--dry-run",
@@ -144,7 +145,7 @@ def default_dir(
 )
 @click.option(
     "--load-pairs",
-    type=PathParamType(),
+    type=PathParam(),
     help="Load pairs from file (filters will still be applied!)",
 )
 def fetch(**args):
@@ -227,7 +228,7 @@ def fetch(**args):
         measurement = mesh.find_measurement(target, args["af"], args["type"])
         if not measurement:
             raise click.ClickException(f"No measurement found for {target}")
-        for date in daterange(start_date, stop_date, split):
+        for date in datetimerange(start_date, stop_date, split):
             meta = AtlasResultsMeta(
                 measurement.af,
                 measurement.type,

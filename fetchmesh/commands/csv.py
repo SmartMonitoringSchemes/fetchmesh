@@ -5,13 +5,14 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import click
+from mtoolbox.click import PathParam
+from mtoolbox.itertools import groupby_stream
 from pandas import DataFrame, Timedelta, concat
 from tqdm import tqdm
 
-from ..ext import PathParamType, bprint
+from ..ext import bprint
 from ..io import AtlasRecordsReader, AtlasRecordsWriter
 from ..transformers import TracerouteFlatIPTransformer
-from ..utils import groupby_stream
 
 # TODO: Implement parallel processing
 
@@ -26,11 +27,7 @@ def csv():
 
 @csv.command()
 @click.option(
-    "--dir",
-    default=".",
-    show_default=True,
-    type=PathParamType(),
-    help="Output directory",
+    "--dir", default=".", show_default=True, type=PathParam(), help="Output directory",
 )
 @click.option(
     "--mode",
@@ -39,7 +36,7 @@ def csv():
     type=click.Choice(["split", "merge"], case_sensitive=False),
     help="In split mode one file is created per pair, in merge mode a single file is created.",
 )
-@click.argument("files", required=True, nargs=-1, type=PathParamType())
+@click.argument("files", required=True, nargs=-1, type=PathParam())
 def ping(files, dir, mode):
     """
     Convert ping results.
@@ -140,7 +137,7 @@ def ping(files, dir, mode):
     is_flag=True,
     help="Remove private IP addresses (v4 and v6)",
 )
-@click.argument("files", required=True, nargs=-1, type=PathParamType())
+@click.argument("files", required=True, nargs=-1, type=PathParam())
 def traceroute(files, drop_private):
     """
     Convert traceroute results.

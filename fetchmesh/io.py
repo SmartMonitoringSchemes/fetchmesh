@@ -1,3 +1,4 @@
+import json
 import struct
 from dataclasses import dataclass, field
 from io import TextIOWrapper
@@ -5,11 +6,14 @@ from pathlib import Path
 from traceback import print_exception
 from typing import Iterable, List
 
+from mtoolbox.optional import tryfunc
 from zstandard import ZstdCompressor, ZstdDecompressor
 
 from .filters import StreamFilter
 from .transformers import RecordTransformer
-from .utils import json_trydumps, json_tryloads
+
+json_trydumps = tryfunc(json.dumps, default="")
+json_tryloads = tryfunc(json.loads)
 
 
 def detect_codec(file):

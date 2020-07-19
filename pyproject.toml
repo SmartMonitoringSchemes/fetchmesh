@@ -20,6 +20,7 @@ zstandard = "^0.12.0"
 py-radix = "^0.10.0"
 tqdm = "^4.46.0"
 psutil = "^5.7.0"
+mtoolbox = {extras = ["click"], git = "https://github.com/maxmouchet/mtoolbox.git", rev = "v0.1.0"}
 
 [tool.poetry.dev-dependencies]
 # https://github.com/python-poetry/poetry/issues/649
@@ -43,6 +44,7 @@ ipython = "^7.14.0"
 [tool.poetry.scripts]
 fetchmesh = 'fetchmesh.cli:cli'
 
+# TODO: Remove ipython, pylint, isort, ... from pyproject.toml
 [tool.pylint.messages_control]
 # https://github.com/psf/black/issues/48
 disable = "bad-continuation,invalid-name,fixme,missing-docstring,too-few-public-methods,unsubscriptable-object"

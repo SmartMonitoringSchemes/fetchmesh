@@ -3,8 +3,10 @@ from dataclasses import dataclass
 from itertools import chain
 from typing import List, Union
 
+from mtoolbox.itertools import groupby_pairs
+from mtoolbox.random import sample_groups
+
 from ..atlas import AtlasAnchor, AtlasAnchorPair
-from ..utils import groupby_pairs, sample_groups
 from .abstract import BatchFilter, StreamFilter
 
 # TODO: AS sampler

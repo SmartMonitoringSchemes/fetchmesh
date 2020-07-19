@@ -3,12 +3,13 @@ from collections import defaultdict
 
 import click
 import tableformatter as tf
+from mtoolbox.click import ParsedDate
+from mtoolbox.itertools import countby
 
 from ..atlas import MeasurementAF, MeasurementType
-from ..ext import DateParseParamType, bprint
+from ..ext import bprint
 from ..filters import HalfPairFilter, MeasurementDateFilter, SelfPairFilter
 from ..mesh import AnchoringMesh
-from ..utils import countby
 
 
 def expected_pairs(n_anchors, no_self, half):
@@ -25,7 +26,7 @@ def expected_pairs(n_anchors, no_self, half):
     "--date",
     default="now",
     show_default=True,
-    type=DateParseParamType(),
+    type=ParsedDate(),
     help="Pairs should exist between `start-date` and `stop-date`.",
 )
 def describe(date):

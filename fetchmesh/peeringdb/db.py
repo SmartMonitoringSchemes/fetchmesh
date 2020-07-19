@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import List
 
+from mtoolbox.itertools import groupby
 from radix import Radix
 
-from ..utils import groupby
 from .client import PeeringDBClient
 from .objects import IX, LAN, Prefix
 

@@ -2,13 +2,14 @@ from collections import defaultdict
 from multiprocessing import Pool
 
 import click
+from mtoolbox.click import EnumChoice, ParsedDate, PathParam
+from mtoolbox.itertools import groupby_stream
 from tqdm import tqdm
 
 from ..atlas import MeasurementAF, MeasurementType
-from ..ext import DateParseParamType, EnumChoice, PathParamType, bprint, format_args
+from ..ext import bprint, format_args
 from ..io import AtlasRecordsReader, AtlasRecordsWriter
 from ..meta import AtlasResultsMeta
-from ..utils import groupby_stream
 
 
 class UnpackWorker:
@@ -59,10 +60,10 @@ class UnpackWorker:
     "--type", type=EnumChoice(MeasurementType, str), help="Filter measurements type",
 )
 @click.option(
-    "--start-date", type=DateParseParamType(), help="Results start date",
+    "--start-date", type=ParsedDate(), help="Results start date",
 )
 @click.option(
-    "--stop-date", type=DateParseParamType(), help="Results stop date",
+    "--stop-date", type=ParsedDate(), help="Results stop date",
 )
 @click.option(
     "--jobs",
@@ -78,8 +79,8 @@ class UnpackWorker:
     show_default=True,
     type=click.Choice(["append", "overwrite", "skip"]),
 )
-@click.argument("src", required=True, type=PathParamType())
-@click.argument("dst", required=False, type=PathParamType())
+@click.argument("src", required=True, type=PathParam())
+@click.argument("dst", required=False, type=PathParam())
 def unpack(**args):
     """
     Split measurement results by origin-destination pairs.

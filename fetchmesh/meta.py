@@ -3,8 +3,10 @@ import re
 from dataclasses import dataclass
 from urllib.parse import urlencode
 
+from mtoolbox.datetime import parsetimestamp
+from mtoolbox.optional import unwrap
+
 from .atlas import MeasurementAF, MeasurementType
-from .utils import parsetimestamp, unwrap
 
 
 @dataclass(frozen=True)
