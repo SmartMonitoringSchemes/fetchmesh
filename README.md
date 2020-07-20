@@ -4,6 +4,9 @@
   <a href="https://github.com/maxmouchet/fetchmesh/actions">
     <img src="https://github.com/maxmouchet/fetchmesh/workflows/CI/badge.svg">
   </a>
+  <a href="https://codecov.io/github/maxmouchet/fetchmesh?branch=master">
+    <img src="https://codecov.io/github/maxmouchet/fetchmesh/coverage.svg?branch=master">
+  </a>
   <a href="https://maxmouchet.github.io/fetchmesh/stable">
     <img src="https://img.shields.io/badge/docs-stable-blue.svg?style=flat">
   </a>
