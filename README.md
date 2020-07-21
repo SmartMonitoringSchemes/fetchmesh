@@ -129,6 +129,7 @@ from fetchmesh.transformers import TracerouteFlatIPTransformer
 
 def to_kapar_format(record, include_origin=True):
     lines = [
+        # Only '#' is strictly necessary on this line. We include the metadata for reference, if needed.
         f"# timestamp={record['timestamp']} measurement={record['msm_id']} probe={record['prb_id']}"
     ]
     if include_origin:
