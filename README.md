@@ -1,6 +1,6 @@
 <p align="center">
   <img src="/docs/logo.png" height="150"><br/>
-  <i>Fetch and slice the RIPE Atlas anchoring mesh.</i><br/><br/>
+  <i>A Python library for working with the RIPE Atlas anchoring mesh.</i><br/><br/>
   <a href="https://github.com/maxmouchet/fetchmesh/actions">
     <img src="https://github.com/maxmouchet/fetchmesh/workflows/CI/badge.svg">
   </a>
@@ -14,8 +14,21 @@
 
 fetchmesh is a tool to simplify working with Atlas [anchoring mesh](https://atlas.ripe.net/about/anchors/) measurements. It can download results concurrently, process large files in streaming without requiring a large amount of memory, and clean measurement results. It uses Facebook [Zstandard](https://facebook.github.io/zstd/) algorithm for fast data compression.
 
-See the [issues](https://github.com/maxmouchet/fetchmesh/issues) on GitHub to see what is broken / not currently working.
+- [**Documentation**](https://maxmouchet.github.io/fetchmesh) — Consult the quick start guide and the online documentation.
+- [**Issues**](https://github.com/maxmouchet/fetchmesh/issues) — See what is broken / currently not working. 
 
-See the [documentation](https://maxmouchet.github.io/fetchmesh) for installation instructions and more.
+## :rocket: Quick Start
+
+```bash
+# Requires Python 3.7+
+pip install --upgrade pip
+pip install --upgrade git+ssh://git@github.com/maxmouchet/fetchmesh.git
+
+fetchmesh --help
+# Usage: fetchmesh [OPTIONS] COMMAND [ARGS]...
+# ...
+```
+
+See the [documentation](https://maxmouchet.github.io/fetchmesh) for more.
 
 *Logo: Pizza by Denis Shumaylov from the Noun Project (Creative Commons).*
