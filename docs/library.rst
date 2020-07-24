@@ -27,3 +27,12 @@ Records
 
 .. automodule:: fetchmesh.filters.record
    :members:
+
+Transformers
+------------
+
+Records
+~~~~~~~
+
+.. automodule:: fetchmesh.transformers.record
+   :members:
