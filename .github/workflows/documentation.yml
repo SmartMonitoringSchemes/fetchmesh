@@ -1,0 +1,29 @@
+name: Documentation
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+
+      - name: Install project
+        run: |
+          pip install poetry
+          poetry install
+
+      - name: Build documentation
+        run: poetry run make -C docs/ html
+
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: docs/_build/html
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
