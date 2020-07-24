@@ -17,4 +17,18 @@ fetchmesh is a tool to simplify working with Atlas [anchoring mesh](https://atla
 - [**Documentation**](https://maxmouchet.github.io/fetchmesh) — Consult the quick start guide and the online documentation.
 - [**Issues**](https://github.com/maxmouchet/fetchmesh/issues) — See what is broken / currently not working. 
 
+## :rocket: Quick Start
+
+```bash
+# Requires Python 3.7+
+pip install --upgrade pip
+pip install --upgrade git+ssh://git@github.com/maxmouchet/fetchmesh.git
+
+fetchmesh --help
+# Usage: fetchmesh [OPTIONS] COMMAND [ARGS]...
+# ...
+```
+
+See the [documentation](https://maxmouchet.github.io/fetchmesh) for more.
+
 *Logo: Pizza by Denis Shumaylov from the Noun Project (Creative Commons).*
