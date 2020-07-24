@@ -1,8 +1,15 @@
+import pytest
 from hypothesis import given
 from strategies import atlas_results_metas
 
 from fetchmesh.atlas import AtlasAnchor, Country
-from fetchmesh.filters import AnchorRegionFilter, HalfPairFilter, PairRegionSampler
+from fetchmesh.filters import (
+    AnchorRegionFilter,
+    HalfPairFilter,
+    PairRegionSampler,
+    PairSampler,
+    SelfPairFilter,
+)
 
 
 def test_anchor_region_filter():
@@ -25,6 +32,29 @@ def test_half_pair_filter():
     f = HalfPairFilter()
     pairs = [("a", "b"), ("b", "a")]
     assert f(pairs) == f(reversed(pairs))
+
+
+def test_self_pair_filter():
+    pairs = [("a", "a"), ("a", "b")]
+    f = SelfPairFilter()
+    assert f(pairs) == [("a", "b")]
+    f = SelfPairFilter(reverse=True)
+    assert f(pairs) == [("a", "a")]
+
+
+def test_pair_sampler():
+    pairs = [("a", "b") for _ in range(10)]
+    f = PairSampler(0.5)
+    assert f(pairs) == pairs[:5]
+    f = PairSampler(1.0)
+    assert f(pairs) == pairs
+    f = PairSampler(1)
+    assert f(pairs) == pairs[:1]
+    f = PairSampler(5)
+    assert f(pairs) == pairs[:5]
+    with pytest.raises(ValueError):
+        f = PairSampler(2.0)
+        f(pairs)
 
 
 def test_pair_region_sampler():

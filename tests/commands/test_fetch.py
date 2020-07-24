@@ -1,14 +1,17 @@
+import pytest
 from click.testing import CliRunner
 
 from fetchmesh.cli import cli
 
 
+@pytest.mark.online
 def test_fetch():
     runner = CliRunner()
     result = runner.invoke(cli, ["fetch", "--af", 4, "--type", "ping", "--dry-run"])
     assert result.exit_code == 0
 
 
+@pytest.mark.online
 def test_fetch_pairs():
     runner = CliRunner()
 
