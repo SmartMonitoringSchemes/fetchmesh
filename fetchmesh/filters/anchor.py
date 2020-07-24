@@ -53,7 +53,23 @@ class AnchorPairFilter(BatchFilter[AtlasAnchorPair]):
 
 @dataclass(frozen=True)
 class PairSampler(AnchorPairFilter):
+    """
+    Take a random sample of the anchor pairs.
+
+    .. code-block:: python
+
+        # Keep 75% of the pairs
+        filter = PairSampler(0.75)
+
+        # Keep 200 pairs
+        filter = PairSampler(200)
+    """
+
     k: Union[float, int]
+    """
+    | If ``k`` is a float between 0.0 and 1.0, it will sample ``k*len(data)`` pairs.
+    | If ``k`` is an integer greater than or equal to 0, it will sample ``k`` pairs.
+    """
 
     def filter(self, data):
         if isinstance(self.k, float) and (self.k < 0.0 or self.k > 1.0):
@@ -84,6 +100,15 @@ class PairRegionSampler(AnchorPairFilter):
 
 
 class HalfPairFilter(AnchorPairFilter):
+    """
+    Keep only one of the two measurement for each pair
+    (i.e. A->B or B->A, but not both).
+
+    .. code-block:: python
+
+        filter = HalfPairFilter()
+    """
+
     def filter(self, data):
         kept = set()
         for (a, b) in sorted(data):
@@ -92,11 +117,25 @@ class HalfPairFilter(AnchorPairFilter):
         return list(kept)
 
 
+@dataclass(frozen=True)
 class SelfPairFilter(AnchorPairFilter):
-    # reverse = False: drop self pairs
-    # reverse = True: keep only self pairs
-    def __init__(self, reverse=False):
-        self.reverse = reverse
+    """
+    Drop (or keep only) measurements where the origin anchor is equal to the destination anchor.
+
+    .. code-block:: python
+
+        # Drop self pairs
+        filter = SelfPairFilter()
+
+        # Keep only self pairs
+        filter = SelfPairFilter(reverse=True)
+    """
+
+    reverse: bool = False
+    """
+    | reverse = False: drop self pairs
+    | reverse = True: keep only self pairs
+    """
 
     def filter(self, data):
         if self.reverse:
