@@ -1,6 +1,6 @@
 <p align="center">
   <img src="/docs/logo.png" height="150"><br/>
-  <i>Fetch and slice the RIPE Atlas anchoring mesh.</i><br/><br/>
+  <i>A Python library for working with the RIPE Atlas anchoring mesh.</i><br/><br/>
   <a href="https://github.com/maxmouchet/fetchmesh/actions">
     <img src="https://github.com/maxmouchet/fetchmesh/workflows/CI/badge.svg">
   </a>
