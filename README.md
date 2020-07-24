@@ -7,7 +7,7 @@
   <a href="https://codecov.io/gh/maxmouchet/fetchmesh">
     <img src="https://codecov.io/gh/maxmouchet/fetchmesh/branch/master/graph/badge.svg?token=6w9W4QBFQx">
   </a>
-  <a href="https://maxmouchet.github.io/fetchmesh/stable">
+  <a href="https://maxmouchet.github.io/fetchmesh">
     <img src="https://img.shields.io/badge/documenation-online-blue.svg?style=flat">
   </a>
 </p>
