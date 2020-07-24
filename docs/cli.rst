@@ -1,5 +1,5 @@
-Command Line
-============
+Command Line Reference
+======================
 
 .. click:: fetchmesh.cli:cli
    :prog: fetchmesh
