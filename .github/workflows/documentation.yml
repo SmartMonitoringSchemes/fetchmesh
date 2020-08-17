@@ -11,19 +11,25 @@ jobs:
         with:
           python-version: '3.7'
 
+      - name: Install LaTeX
+        run: |
+          sudo apt-get install -y texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra latexmk
+
       - name: Install project
         run: |
           pip install poetry
           poetry install
 
       - name: Build documentation
-        run: poetry run make -C docs/ html
+        run: |
+          poetry run make -C docs/ latexpdf
+          find docs/_build/latex/ -type f -not -name '*.pdf' -exec rm '{}' \;
 
       - name: Deploy to GitHub Pages
         if: success()
         uses: crazy-max/ghaction-github-pages@v2
         with:
           target_branch: gh-pages
-          build_dir: docs/_build/html
+          build_dir: docs/_build/latex
         env:
           GH_PAT: ${{ secrets.DOCS_TOKEN }}
