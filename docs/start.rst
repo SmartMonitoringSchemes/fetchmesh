@@ -25,13 +25,13 @@ it can be installed directly from GitHub:
 .. code:: bash
 
    pip install --upgrade pip
-   pip install --upgrade git+ssh://git@github.com/maxmouchet/fetchmesh.git
+   pip install --upgrade git+ssh://git@github.com/SmartMonitoringSchemes/fetchmesh.git
 
 or from a local copy:
 
 .. code:: bash
 
-   git clone git@github.com:maxmouchet/fetchmesh.git
+   git clone git@github.com:SmartMonitoringSchemes/fetchmesh.git
    cd fetchmesh; pip install .
 
 To verify the installation:
