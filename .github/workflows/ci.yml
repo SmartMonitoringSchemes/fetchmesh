@@ -19,7 +19,7 @@ jobs:
 
       - name: Run tests
         run: poetry run pytest
-      
+
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -30,9 +30,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # Temporarily disable macOS due to a GitHub (?) issue
-        # os: [ubuntu-latest, macos-latest, windows-latest]
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ['3.7']
 
     steps:
