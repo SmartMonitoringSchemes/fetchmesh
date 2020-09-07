@@ -4,10 +4,10 @@ from fetchmesh.asn import ASNDB
 
 
 def test_asndb():
-    f1 = Path(__file__).parent.joinpath("rib.txt")
+    f1 = Path(__file__).parent / "data" / "rib.txt"
     db1 = ASNDB.from_file(f1)
 
-    f2 = Path(__file__).parent.joinpath("rib.txt.zst")
+    f2 = Path(__file__).parent / "data" / "rib.txt.zst"
     db2 = ASNDB.from_file(f2)
 
     tree1 = db1.radix_tree()
