@@ -7,7 +7,7 @@ from mtoolbox.datetime import parsetimestamp
 from mtoolbox.optional import unwrap
 from pytz import UTC
 
-from .atlas import MeasurementAF, MeasurementType
+from .atlas import AtlasMeasurement, MeasurementAF, MeasurementType
 
 
 @dataclass(frozen=True)
@@ -75,3 +75,7 @@ class AtlasResultsMeta:
             unwrap(parsetimestamp(stop_timestamp, UTC)),
             extension.endswith(".zst"),
         )
+
+    @classmethod
+    def from_measurement(cls, msm: AtlasMeasurement, *args, **kwargs):
+        return cls(msm.af, msm.type, msm.id, *args, **kwargs)
