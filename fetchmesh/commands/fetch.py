@@ -11,7 +11,7 @@ from mtoolbox.click import EnumChoice, ParsedDate, PathParam
 from mtoolbox.datetime import datetimerange, totimestamp
 from tqdm import tqdm
 
-from ..atlas import MeasurementAF, MeasurementType
+from ..atlas import AtlasClient, MeasurementAF, MeasurementType, StubAtlasClient
 from ..ext import bprint, format_args
 from ..fetcher import SingleFileFetcher
 from ..filters import (
@@ -148,6 +148,13 @@ def default_dir(
     type=PathParam(),
     help="Load pairs from file (filters will still be applied!)",
 )
+@click.option(
+    "--stub-client",
+    default=False,
+    show_default=True,
+    is_flag=True,
+    help="Use a local simulation of the RIPE Atlas API, useful for debugging.",
+)
 def fetch(**args):
     """
     Fetch measurement results.
@@ -163,7 +170,8 @@ def fetch(**args):
     outdir = args["dir"] or defdir
     bprint("Path", outdir.absolute())
 
-    mesh = AnchoringMesh.from_api()
+    client = StubAtlasClient() if args["stub_client"] else AtlasClient()
+    mesh = AnchoringMesh.from_api(client=client)
     bprint("Anchors", len(mesh.anchors))
 
     # We load pairs either:
@@ -239,7 +247,7 @@ def fetch(**args):
             )
             metas.append((meta, probes))
 
-    fetcher = SingleFileFetcher(outdir)
+    fetcher = SingleFileFetcher(outdir, client=client)
 
     # Stop here if we perform a dry run
     if args["dry_run"]:

@@ -34,3 +34,11 @@ def test_fetch_pairs():
 
         result = runner.invoke(cli, args)
         assert result.exit_code == 0
+
+
+def test_fetch_stub():
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        args = ["fetch", "--af", 4, "--type", "ping", "--stub-client"]
+        result = runner.invoke(cli, args)
+        assert result.exit_code == 0
