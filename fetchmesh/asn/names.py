@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Mapping
 from urllib.request import urlopen
 
@@ -18,6 +19,11 @@ class ASNames:
             asn, name = line.split(" ", maxsplit=1)
             mapping[int(asn)] = name
         return cls(mapping)
+
+    @classmethod
+    def from_file(cls, file):
+        content = Path(file).read_text()
+        return cls.from_str(content)
 
     @classmethod
     def from_url(cls, url=DEFAULT_NAMES_URL):
