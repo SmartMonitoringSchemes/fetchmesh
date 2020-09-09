@@ -1,12 +1,11 @@
-import json
-import os
 import sys
+from pathlib import Path
 
 import pytest
 
 from fetchmesh.stubs import requests_get
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "helpers"))
+sys.path.append(str(Path(__file__).parent / "helpers"))
 
 
 @pytest.fixture(autouse=True)
