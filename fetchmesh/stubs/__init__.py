@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from shutil import copy
 
 
 class MockResponse:
@@ -32,4 +33,19 @@ def requests_get(*args, **kwargs):
         if "/results" in kwargs["url"]:
             return MockResponse("results.ndjson")
         return MockResponse("measurements.json")
-    raise Exception(f"Trying to mock unknown URL, args={args}, kwargs={kwargs}")
+    raise Exception(f"Trying to mock unknown URL; args={args}, kwargs={kwargs}")
+
+
+def wget(url, cwd=None, *args, **kwargs):
+    if url.startswith("http://archive.routeviews.org"):
+        src = Path(__file__).parent / "rib.20180131.0800.bz2"
+        dst = Path(cwd or "") / url.split("/")[-1]
+        copy(src, dst)
+    elif url.startswith("http://data.ris.ripe.net"):
+        src = Path(__file__).parent / "bview.20190417.0800.gz"
+        dst = Path(cwd or "") / url.split("/")[-1]
+        copy(src, dst)
+    else:
+        raise Exception(
+            f"Trying to mock unknown URL; url={url}, args={args}, kwargs={kwargs}"
+        )

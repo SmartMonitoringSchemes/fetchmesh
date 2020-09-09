@@ -2,7 +2,6 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from shutil import copy
 from subprocess import run
 
 
@@ -16,15 +15,15 @@ def collector_from_name(name):
 
 
 # Requires wget (Linux or macOS)!
-def download_rib(c, t, directory, stub=False):
-    file = Path(directory).joinpath(c.table_name(t))
-    if stub:
-        stub = Path(__file__).parent.joinpath("stubs", c.stub_name)
-        copy(stub, file)
-    else:
-        args = ["wget", "-N", c.table_url(t)]
-        run(args, check=True, cwd=directory)
+def download_rib(c, t, directory):
+    file = Path(directory) / c.table_name(t)
+    wget(c.table_url(t), cwd=directory, options=["-N"])
     return file
+
+
+def wget(url, cwd=None, options=[]):
+    args = ["wget", *options, url]
+    run(args, check=True, cwd=cwd)
 
 
 @dataclass
@@ -40,10 +39,6 @@ class RISCollector:
 
     def table_url(self, t: datetime) -> str:
         return "{}/{}/{}".format(self.base_url, t.strftime("%Y.%m"), self.table_name(t))
-
-    @property
-    def stub_name(self) -> str:
-        return "bview.20190417.0800.gz"
 
 
 @dataclass
@@ -63,7 +58,3 @@ class RouteViewsCollector:
         return "{}/{}/RIBS/{}".format(
             self.base_url, t.strftime("%Y.%m"), self.table_name(t)
         )
-
-    @property
-    def stub_name(self) -> str:
-        return "rib.20180131.0800.bz2"

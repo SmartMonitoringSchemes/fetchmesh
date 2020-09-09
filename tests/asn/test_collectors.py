@@ -1,6 +1,11 @@
 from datetime import datetime
 
-from fetchmesh.asn import RISCollector, RouteViewsCollector, collector_from_name
+from fetchmesh.asn import (
+    RISCollector,
+    RouteViewsCollector,
+    collector_from_name,
+    download_rib,
+)
 
 
 def test_from_hostname():
