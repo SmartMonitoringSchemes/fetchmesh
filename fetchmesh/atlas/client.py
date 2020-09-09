@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 import requests
-from mtoolbox.cache import Cache, NoopCache
+from mtoolbox.cache import Cache
 from tqdm import tqdm
 
 ATLAS_API_URL = "https://atlas.ripe.net/api/v2"
@@ -117,22 +117,3 @@ class AtlasClient(BaseAtlasClient):
             self.logger.warning("%s status for GET %s", r.status_code, url)
             return []
         return map(json.loads, filter(None, r.iter_lines(decode_unicode=True)))
-
-
-class StubAtlasClient(AtlasClient):
-    def __init__(self):
-        super().__init__()
-        self.base_url = "http://0.0.0.0"
-        self.cache = NoopCache("fetchmesh")
-        self.stubs_dir = Path(__file__).parent.joinpath("stubs")
-
-    def fetch_anchors(self):
-        return json.loads(self.stubs_dir.joinpath("anchors.json").read_text())
-
-    def fetch_measurements(self, params):
-        # ! This ignore `params` !
-        return json.loads(self.stubs_dir.joinpath("measurements.json").read_text())
-
-    def fetch_results_stream(self, path):
-        # ! This ignore `path` !
-        return json.loads(self.stubs_dir.joinpath("results.json").read_text())
