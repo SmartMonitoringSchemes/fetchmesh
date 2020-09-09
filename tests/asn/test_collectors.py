@@ -1,6 +1,13 @@
 from datetime import datetime
 
-from fetchmesh.asn import RISCollector, RouteViewsCollector
+from fetchmesh.asn import RISCollector, RouteViewsCollector, collector_from_name
+
+
+def test_from_hostname():
+    assert collector_from_name("rrc00.ripe.net") == RISCollector("rrc00")
+    assert collector_from_name("route-views2.oregon-ix.net") == RouteViewsCollector(
+        "route-views2"
+    )
 
 
 def test_ris():
