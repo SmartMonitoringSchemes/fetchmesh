@@ -3,11 +3,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
 
-import requests
 from mtoolbox.cache import Cache
+from mtoolbox.requests import FTPAdapter
+from requests import Session
 
-#  DEFAULT_NAMES_URL = "ftp://ftp.ripe.net/ripe/asnames/asn.txt"
-DEFAULT_NAMES_URL = "https://www.cidr-report.org/as2.0/autnums.html"
+DEFAULT_NAMES_URL = "ftp://ftp.ripe.net/ripe/asnames/asn.txt"
 
 
 @dataclass(frozen=True)
@@ -29,11 +29,16 @@ class ASNames:
 
     @classmethod
     def from_url(cls, url=DEFAULT_NAMES_URL):
-        content = Cache("fetchmesh").get(url, lambda: requests.get(url).content)
-        pattern = re.compile(r".+AS(\d+)\s*<\/a>\s*(.+)")
-        mapping = {}
-        for line in content.split("\n"):
-            m = pattern.match(line)
-            if m:
-                mapping[int(m.group(1))] = m.group(2)
-        return cls(mapping)
+        session = Session()
+        session.mount("ftp://", FTPAdapter())
+
+        def fn():
+            res = session.get(url, timeout=15)
+            res.encoding = "ISO8859-1"
+            res.raise_for_status()
+            return res.text
+
+        cache = Cache("fetchmesh")
+        content = cache.get(url, fn)
+
+        return cls.from_str(content)

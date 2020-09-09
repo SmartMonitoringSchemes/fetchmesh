@@ -2,7 +2,9 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from subprocess import run
+from shutil import copyfileobj
+
+import requests
 
 
 def collector_from_name(name):
@@ -14,16 +16,15 @@ def collector_from_name(name):
         return RouteViewsCollector(name)
 
 
-# Requires wget (Linux or macOS)!
 def download_rib(c, t, directory):
     file = Path(directory) / c.table_name(t)
-    wget(c.table_url(t), cwd=directory, options=["-N"])
+    # TODO: Show progress
+    if not file.exists():
+        r = requests.get(c.table_url(t), stream=True, timeout=15)
+        r.raise_for_status()
+        with file.open("wb") as f:
+            copyfileobj(r.raw, f)
     return file
-
-
-def wget(url, cwd=None, options=[]):
-    args = ["wget", *options, url]
-    run(args, check=True, cwd=cwd)
 
 
 @dataclass

@@ -1,4 +1,6 @@
 from datetime import datetime
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from fetchmesh.asn import (
     RISCollector,
@@ -39,3 +41,11 @@ def test_routeviews():
         c2.table_url(t)
         == "http://archive.routeviews.org/bgpdata/2019.08/RIBS/rib.20190801.0800.bz2"
     )
+
+
+def test_download_rib():
+    t = datetime(2019, 8, 1, 8)
+    c = RouteViewsCollector("route-views.amsix")
+    with TemporaryDirectory() as tmpdir:
+        download_rib(c, t, tmpdir)
+        assert (Path(tmpdir) / c.table_name(t)).exists()

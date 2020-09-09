@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from fetchmesh.stubs import requests_get, wget
+from fetchmesh.stubs import requests_mock
 
 sys.path.append(str(Path(__file__).parent / "helpers"))
 
@@ -12,5 +12,4 @@ sys.path.append(str(Path(__file__).parent / "helpers"))
 def no_requests(monkeypatch):
     cache_get = lambda self, key, fn, *args, **kwargs: fn()
     monkeypatch.setattr("mtoolbox.cache.Cache.get", cache_get)
-    monkeypatch.setattr("requests.sessions.Session.request", requests_get)
-    monkeypatch.setattr("fetchmesh.asn.collectors.wget", wget)
+    monkeypatch.setattr("requests.sessions.Session.request", requests_mock())
