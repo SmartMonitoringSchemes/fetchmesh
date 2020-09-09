@@ -17,13 +17,14 @@ def collector_from_name(name):
 
 # Requires wget (Linux or macOS)!
 def download_rib(c, t, directory, stub=False):
+    file = Path(directory).joinpath(c.table_name(t))
     if stub:
         stub = Path(__file__).parent.joinpath("stubs", c.stub_name)
-        file = Path(directory).joinpath(c.table_name(t))
         copy(stub, file)
     else:
-        args = ["wget", "-N", "-O", c.table_name(t), c.table_url(t)]
+        args = ["wget", "-N", c.table_url(t)]
         run(args, check=True, cwd=directory)
+    return file
 
 
 @dataclass
