@@ -1,11 +1,13 @@
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
-from urllib.request import urlopen
 
+import requests
 from mtoolbox.cache import Cache
 
-DEFAULT_NAMES_URL = "ftp://ftp.ripe.net/ripe/asnames/asn.txt"
+#  DEFAULT_NAMES_URL = "ftp://ftp.ripe.net/ripe/asnames/asn.txt"
+DEFAULT_NAMES_URL = "https://www.cidr-report.org/as2.0/autnums.html"
 
 
 @dataclass(frozen=True)
@@ -27,11 +29,11 @@ class ASNames:
 
     @classmethod
     def from_url(cls, url=DEFAULT_NAMES_URL):
-        cache = Cache("fetchmesh")
-
-        def fn():
-            with urlopen(url) as f:
-                return f.read().decode("ISO8859-1")
-
-        content = cache.get(url, fn)
-        return cls.from_str(content)
+        content = Cache("fetchmesh").get(url, lambda: requests.get(url).content)
+        pattern = re.compile(r".+AS(\d+)\s*<\/a>\s*(.+)")
+        mapping = {}
+        for line in content.split("\n"):
+            m = pattern.match(line)
+            if m:
+                mapping[int(m.group(1))] = m.group(2)
+        return cls(mapping)
