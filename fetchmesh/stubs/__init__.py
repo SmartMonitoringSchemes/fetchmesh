@@ -25,7 +25,13 @@ class MockResponse:
 
 
 def requests_get(*args, **kwargs):
-    if kwargs["url"].endswith("autnums.html"):
+    if kwargs["url"] == "https://peeringdb.com/api/ix.json":
+        return MockResponse("ix.json")
+    elif kwargs["url"] == "https://peeringdb.com/api/ixlan.json":
+        return MockResponse("ixlan.json")
+    elif kwargs["url"] == "https://peeringdb.com/api/ixpfx.json":
+        return MockResponse("ixpfx.json")
+    elif kwargs["url"].endswith("autnums.html"):
         return MockResponse("autnums.html")
     elif kwargs["url"].startswith("https://atlas.ripe.net/api/v2/anchors"):
         return MockResponse("anchors.json")
