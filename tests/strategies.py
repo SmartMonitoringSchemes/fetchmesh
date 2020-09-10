@@ -1,6 +1,7 @@
 import datetime as dt
 
 from hypothesis import assume
+from hypothesis.provisional import domains
 from hypothesis.strategies import (
     booleans,
     composite,
@@ -44,3 +45,17 @@ def atlas_results_metas(draw):
         stop_date=stop_date,
         compressed=draw(booleans()),
     )
+
+
+@composite
+def collector_datetimes(draw):
+    return draw(
+        datetimes(
+            min_value=dt.datetime(1000, 1, 1), max_value=dt.datetime(9999, 12, 31)
+        ).map(lambda x: x.replace(minute=0, second=0, microsecond=0))
+    )
+
+
+@composite
+def collector_fqdns(draw):
+    return draw(domains()) + draw(sampled_from([".routeviews.org", ".ripe.net"]))

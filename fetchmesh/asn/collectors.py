@@ -17,12 +17,19 @@ class Collector(ABC):
 
         >>> from datetime import datetime
         >>> from fetchmesh.asn import Collector
-        >>> collector = Collector.from_name("route-views2.routeviews.org")
+        >>> collector = Collector.from_fqdn("route-views2.routeviews.org")
         >>> collector.table_name(datetime(2020, 1, 1, 8))
         'rib.20200101.0800.bz2'
         >>> collector.table_url(datetime(2020, 1, 1, 8))
         'http://archive.routeviews.org/bgpdata/2020.01/RIBS/rib.20200101.0800.bz2'
     """
+
+    extension = ""
+
+    @abstractmethod
+    @property
+    def fqdn(self) -> str:
+        ...
 
     @abstractmethod
     def table_name(self, t: datetime) -> str:
@@ -52,8 +59,8 @@ class Collector(ABC):
         return file
 
     @classmethod
-    def from_name(cls, name: str) -> Optional["Collector"]:
-        m = re.match(r"^(.+)\.(routeviews|oregon-ix|ripe)\.\w+", name)
+    def from_fqdn(cls, fqdn: str) -> Optional["Collector"]:
+        m = re.match(r"^(.+)\.(routeviews|oregon-ix|ripe)\.\w+", fqdn)
         if m:
             name, service = m.groups()
             if service == "ripe":
@@ -77,13 +84,18 @@ class RISCollector(Collector):
     """
 
     name: str
+    extension: str = "gz"
 
     @property
     def base_url(self) -> str:
         return f"http://data.ris.ripe.net/{self.name}"
 
+    @property
+    def fqdn(self) -> str:
+        return f"{self.name}.ripe.net"
+
     def table_name(self, t: datetime) -> str:
-        return "bview.{}.gz".format(t.strftime("%Y%m%d.%H%M"))
+        return "bview.{}.{}".format(t.strftime("%Y%m%d.%H%M"), self.extension)
 
     def table_url(self, t: datetime) -> str:
         return "{}/{}/{}".format(self.base_url, t.strftime("%Y.%m"), self.table_name(t))
@@ -103,6 +115,7 @@ class RouteViewsCollector(Collector):
     """
 
     name: str
+    extension: str = "bz2"
 
     @property
     def base_url(self) -> str:
@@ -110,8 +123,12 @@ class RouteViewsCollector(Collector):
             return "http://archive.routeviews.org/bgpdata"
         return f"http://archive.routeviews.org/{self.name}/bgpdata"
 
+    @property
+    def fqdn(self) -> str:
+        return f"{self.name}.routeviews.org"
+
     def table_name(self, t: datetime) -> str:
-        return "rib.{}.bz2".format(t.strftime("%Y%m%d.%H%M"))
+        return "rib.{}.{}".format(t.strftime("%Y%m%d.%H%M"), self.extension)
 
     def table_url(self, t: datetime) -> str:
         return "{}/{}/RIBS/{}".format(

@@ -5,8 +5,6 @@ import pytest
 
 from fetchmesh.mocks import requests_mock
 
-sys.path.append(str(Path(__file__).parent / "helpers"))
-
 
 @pytest.fixture(autouse=True)
 def no_requests(monkeypatch):

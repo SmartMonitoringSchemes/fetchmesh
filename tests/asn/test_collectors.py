@@ -5,11 +5,14 @@ from tempfile import TemporaryDirectory
 from fetchmesh.asn import Collector, RISCollector, RouteViewsCollector
 
 
-def test_from_name():
-    assert Collector.from_name("rrc00.ripe.net") == RISCollector("rrc00")
-    assert Collector.from_name("route-views2.oregon-ix.net") == RouteViewsCollector(
+def test_from_fqn():
+    assert Collector.from_fqdn("rrc00.ripe.net") == RISCollector("rrc00")
+    assert Collector.from_fqdn("route-views2.oregon-ix.net") == RouteViewsCollector(
         "route-views2"
     )
+    assert Collector.from_fqdn(
+        "route-views.amsix.routeviews.org"
+    ) == RouteViewsCollector("route-views.amsix")
 
 
 def test_ris():
