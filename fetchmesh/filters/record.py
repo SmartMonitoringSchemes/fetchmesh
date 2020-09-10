@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Set
 
+from ..atlas import MeasurementType
 from .abstract import StreamFilter
 
 
@@ -18,3 +19,11 @@ class SelfRecordFilter(StreamFilter[dict]):
         return (data["from"] != data["dst_addr"]) and (
             data["src_addr"] != data["dst_addr"]
         )
+
+
+@dataclass(frozen=True)
+class RecordTypeFilter(StreamFilter[dict]):
+    type: MeasurementType
+
+    def keep(self, measurement):
+        return measurement["type"] == self.type.value
