@@ -110,7 +110,7 @@ class IPASNMeta:
         fqdn, datetime = m.groups()
         return cls(
             unwrap(Collector.from_fqdn(fqdn)),
-            dt.datetime.strptime(datetime, "%Y%m%d%H%M"),
+            dt.datetime.strptime(datetime, "%Y%m%d%H%M").replace(tzinfo=UTC),
         )
 
 
@@ -118,11 +118,12 @@ class IPASNMeta:
 class RIBMeta:
     collector: Collector
 
+    # http://archive.routeviews.org/:
+    # > MRT RIB and UPDATE files have internal timestamps in the standard Unix format, however the file names are constructed based on the time zone setting of the collector.
+    # > The collectors had their time zones set to Pacific Time prior to Feb 3, 2003 at approximately 19:00 UTC. At that time all but one of the existing collectors had their time zones reset to UTC.
+    # >The one exception was routeviews.eqix which was not reset to UTC until Feb 1, 2006 at approximately 21:00 UTC.
+    # TODO: Use the proper timezone for each collector.
     datetime: dt.datetime
-    """
-    .. note::
-        From http://archive.routeviews.org/: MRT RIB and UPDATE files have internal timestamps in the standard Unix format, however the file names are constructed based on the time zone setting of the collector. The collectors had their time zones set to Pacific Time prior to Feb 3, 2003 at approximately 19:00 UTC. At that time all but one of the existing collectors had their time zones reset to UTC. The one exception was routeviews.eqix which was not reset to UTC until Feb 1, 2006 at approximately 21:00 UTC.
-    """
 
     PATTERN = re.compile(r"rib_(.+)_(\d{12})")
 
@@ -140,5 +141,5 @@ class RIBMeta:
         fqdn, datetime = m.groups()
         return cls(
             unwrap(Collector.from_fqdn(fqdn)),
-            dt.datetime.strptime(datetime, "%Y%m%d%H%M"),
+            dt.datetime.strptime(datetime, "%Y%m%d%H%M").replace(tzinfo=UTC),
         )

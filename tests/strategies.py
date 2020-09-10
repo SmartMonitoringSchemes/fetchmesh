@@ -51,7 +51,9 @@ def atlas_results_metas(draw):
 def collector_datetimes(draw):
     return draw(
         datetimes(
-            min_value=dt.datetime(1000, 1, 1), max_value=dt.datetime(9999, 12, 31)
+            min_value=dt.datetime(1000, 1, 1),
+            max_value=dt.datetime(9999, 12, 31),
+            timezones=just(UTC),
         ).map(lambda x: x.replace(minute=0, second=0, microsecond=0))
     )
 
