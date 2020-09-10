@@ -47,38 +47,29 @@ If you want to make changes to the library, see the
 Usage
 -----
 
-+------------+------------------------------------+---------+---------+
-| Command    | Description                        | Input   | Output  |
-+============+====================================+=========+=========+
-| describe   | Anchoring mesh overview            | -       | -       |
-+------------+------------------------------------+---------+---------+
-| fetch      | Fetch measurement results          | -       | One     |
-|            |                                    |         | ``ndjso |
-|            |                                    |         | n``     |
-|            |                                    |         | file    |
-|            |                                    |         | per     |
-|            |                                    |         | measure |
-|            |                                    |         | ment    |
-+------------+------------------------------------+---------+---------+
-| unpack     | Split measurement results by pairs | ``ndjso | One     |
-|            |                                    | n``     | ``ndjso |
-|            |                                    | files   | n``     |
-|            |                                    |         | file    |
-|            |                                    |         | per     |
-|            |                                    |         | origin- |
-|            |                                    |         | destina |
-|            |                                    |         | tion    |
-|            |                                    |         | pair    |
-+------------+------------------------------------+---------+---------+
-| csv        | Convert measurement results to CSV | ``ndjso | One or  |
-|            |                                    | n``     | more    |
-|            |                                    | files   | ``csv`` |
-|            |                                    |         | files   |
-|            |                                    |         | (depend |
-|            |                                    |         | ing     |
-|            |                                    |         | on the  |
-|            |                                    |         | mode)   |
-+------------+------------------------------------+---------+---------+
+.. list-table:: fetchmesh commands overview
+   :header-rows: 1
+
+   * - Command
+     - Description
+     - Input
+     - Output
+   * - describe
+     - Anchoring mesh overview
+     - N/A
+     - N/A
+   * - fetch
+     - Fetch measurements results
+     - N/A
+     - One ``ndjson`` file per measurement
+   * - unpack
+     - Split measurement results by pairs
+     - ``ndjson`` files
+     - One ``ndjson`` file per origin-destination pair
+   * - csv
+     - Convert measurement results to CSV
+     - ``ndjson`` files
+     - One or more ``csv`` files, depending on the mode
 
 Use the ``--help`` flag to get more informations on a command,
 e.g. \ ``fetchmesh fetch --help``.

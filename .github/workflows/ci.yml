@@ -20,6 +20,9 @@ jobs:
       - name: Run tests
         run: poetry run pytest
 
+      - name: Run doctets
+        run: poetry run make -C docs/ doctest
+
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
