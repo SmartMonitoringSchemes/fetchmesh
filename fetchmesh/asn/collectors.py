@@ -26,8 +26,8 @@ class Collector(ABC):
 
     extension = ""
 
-    @abstractmethod
     @property
+    @abstractmethod
     def fqdn(self) -> str:
         ...
 
@@ -45,11 +45,13 @@ class Collector(ABC):
         """
         ...
 
-    def download_rib(self, t: datetime, directory: Union[Path, str]) -> Path:
+    def download_rib(
+        self, t: datetime, directory: Union[Path, str], name: Optional[str] = None
+    ) -> Path:
         """
         Download the Routing Information Base (RIB) at time `t` in `directory`.
         """
-        file = Path(directory) / self.table_name(t)
+        file = Path(directory) / (name or self.table_name(t))
         # TODO: Show progress
         if not file.exists():
             r = requests.get(self.table_url(t), stream=True, timeout=15)

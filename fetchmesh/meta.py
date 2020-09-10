@@ -1,5 +1,6 @@
 import datetime as dt
 import re
+from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Union
@@ -14,8 +15,9 @@ from .atlas import AtlasMeasurement, MeasurementAF, MeasurementType
 
 
 def meta_from_filename(name: Union[Path, str]):
-    # TODO
-    pass
+    for cls in [AtlasResultsMeta, IPASNMeta, RIBMeta]:
+        with suppress(Exception):
+            return cls.from_filename(name)  # type: ignore
 
 
 @dataclass(frozen=True)
