@@ -39,29 +39,14 @@ def csv():
 @click.argument("files", required=True, nargs=-1, type=PathParam())
 def ping(files, dir, mode):
     """
-    Convert ping results.
+    Convert ping results from ND-JSON to CSV.
+
+    .. warning::
+        Timestamps are aligned on 240s (4 minutes), even though measurement may have happened at +/- 120s.
 
     \b
-    NOTES
-    -----
-    - Timestamps are aligned on 240s (4 minutes), even though
-      measurement may have happened at +/- 120s.
-
-    \b
-    Split Mode (N files, T rows, 2 columns)
-    ----------
-
-    \b
-    timestamp | rtt
-    ----------|----
-
-    \b
-    Merge Mode (N rows, T+2 columns)
-    ----------
-
-    \b
-    msm_id | prb_id | from_ip | to_ip | rtt_t1 | rtt_t2 | rtt_t3 | ...
-    -------|--------|---------|-------|--------|--------|--------|----
+    Split Mode (`N` files, `T` rows, `2` columns): ``timestamp, rtt``
+    Merge Mode (`N` rows, `T+2` columns): ``msm_id, prb_id, from_ip, to_ip, rtt_t1, rtt_t2, rtt_t3, ...``
     """
     bprint("Output directory", dir)
     bprint("Mode", mode)
@@ -140,17 +125,12 @@ def ping(files, dir, mode):
 @click.argument("files", required=True, nargs=-1, type=PathParam())
 def traceroute(files, drop_private):
     """
-    Convert traceroute results.
+    Convert traceroute results from ND-JSON to CSV.
 
-    \b
-    NOTES
-    -----
-    - Late packets are dropped.
+    .. warning::
+        Late packets are dropped.
 
-
-    \b
-    timestamp | msm_id | prb_id | from_ip | to_ip | paris_id | hop1_1 | ... | hop32_3
-    ----------|--------|--------|---------|-------|----------|--------|-----|--------
+    Columns: ``timestamp, msm_id, prb_id, from_ip, to_ip, paris_id, hop1_1, ..., hop32_3``
     """
     tfip = TracerouteFlatIPTransformer(
         drop_dup=True, drop_late=True, drop_private=drop_private

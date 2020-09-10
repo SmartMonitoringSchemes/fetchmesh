@@ -150,7 +150,7 @@ def default_dir(
 )
 def fetch(**args):
     """
-    Fetch measurement results.
+    Fetch anchoring mesh measurement results from RIPE Atlas.
     """
     bprint("Args", format_args(args))
 

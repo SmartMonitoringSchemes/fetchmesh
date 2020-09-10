@@ -72,14 +72,16 @@ class TracerouteFlatIPTransformer(RecordTransformer):
 
     drop_dup: bool = False
     """
-    Drop duplicate results, e.g.
+    Drop duplicate results::
+
         {'dup': True, 'from': '203.181.249.93', 'rtt': 280.552, 'size': 28, 'ttl': 231}
          ^^^^^^^^^^^
     """
 
     drop_late: bool = False
     """
-    Drop late results, e.g.
+    Drop late results::
+
         {"from":"4.68.72.66","late":2,"size":68,"ttl":56}
                               ^^^^^^^^
     """
