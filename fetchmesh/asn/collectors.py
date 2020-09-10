@@ -1,34 +1,81 @@
 import re
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from shutil import copyfileobj
+from typing import Optional, Union
 
 import requests
 
 
-def collector_from_name(name):
-    m = re.match(r"^(.+)\.(routeviews|oregon-ix|ripe)\.\w+", name)
-    name, service = m.groups()
-    if service == "ripe":
-        return RISCollector(name)
-    elif service == "routeviews" or service == "oregon-ix":
-        return RouteViewsCollector(name)
+class Collector(ABC):
+    """
+    Base class for Remote Route Controllers (RRCs).
+
+    .. doctest::
+
+        >>> from datetime import datetime
+        >>> from fetchmesh.asn import Collector
+        >>> collector = Collector.from_name("route-views2.routeviews.org")
+        >>> collector.table_name(datetime(2020, 1, 1, 8))
+        'rib.20200101.0800.bz2'
+        >>> collector.table_url(datetime(2020, 1, 1, 8))
+        'http://archive.routeviews.org/bgpdata/2020.01/RIBS/rib.20200101.0800.bz2'
+    """
+
+    @abstractmethod
+    def table_name(self, t: datetime) -> str:
+        """
+        Returns the file name for the RIB at time `t`.
+        """
+        ...
+
+    @abstractmethod
+    def table_url(self, t: datetime) -> str:
+        """
+        Returns the URL for the RIB at time `t`.
+        """
+        ...
+
+    def download_rib(self, t: datetime, directory: Union[Path, str]) -> Path:
+        """
+        Download the Routing Information Base (RIB) at time `t` in `directory`.
+        """
+        file = Path(directory) / self.table_name(t)
+        # TODO: Show progress
+        if not file.exists():
+            r = requests.get(self.table_url(t), stream=True, timeout=15)
+            r.raise_for_status()
+            with file.open("wb") as f:
+                copyfileobj(r.raw, f)
+        return file
+
+    @classmethod
+    def from_name(cls, name: str) -> Optional["Collector"]:
+        m = re.match(r"^(.+)\.(routeviews|oregon-ix|ripe)\.\w+", name)
+        if m:
+            name, service = m.groups()
+            if service == "ripe":
+                return RISCollector(name)
+            elif service == "routeviews" or service == "oregon-ix":
+                return RouteViewsCollector(name)
+        return None
 
 
-def download_rib(c, t, directory):
-    file = Path(directory) / c.table_name(t)
-    # TODO: Show progress
-    if not file.exists():
-        r = requests.get(c.table_url(t), stream=True, timeout=15)
-        r.raise_for_status()
-        with file.open("wb") as f:
-            copyfileobj(r.raw, f)
-    return file
+@dataclass(frozen=True)
+class RISCollector(Collector):
+    """
+    A Remote Route Collector (RRC) from the `RIPE Routing Information Service`_ (RIS).
 
+    .. code-block:: python
 
-@dataclass
-class RISCollector:
+        from fetchmesh.asn import RISCollector
+        collector = RISCollector("rrc00")
+
+    .. _RIPE Routing Information Service: https://www.ripe.net/analyse/internet-measurements/routing-information-service-ris/ris-raw-data
+    """
+
     name: str
 
     @property
@@ -42,8 +89,19 @@ class RISCollector:
         return "{}/{}/{}".format(self.base_url, t.strftime("%Y.%m"), self.table_name(t))
 
 
-@dataclass
-class RouteViewsCollector:
+@dataclass(frozen=True)
+class RouteViewsCollector(Collector):
+    """
+    A Remote Route Collector (RRC) from the `University of Oregon Route Views Project`_.
+
+    .. code-block:: python
+
+        from fetchmesh.asn import RISCollector
+        collector = RouteViewsCollector("route-views2")
+
+    .. _University of Oregon Route Views Project: http://archive.routeviews.org/
+    """
+
     name: str
 
     @property
