@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from fetchmesh.stubs import requests_mock
+from fetchmesh.mocks import requests_mock
 
 sys.path.append(str(Path(__file__).parent / "helpers"))
 
