@@ -58,5 +58,7 @@ class SimpleFetcher:
         it = self.client.fetch_results_stream(job.meta.remote_path(job.probes))
         # TODO: Is there a risk of duplicate entries if
         # there is a timeout in the middle of a write?
-        with AtlasRecordsWriter(file, self.filters, job.meta.compressed) as w:
+        with AtlasRecordsWriter(
+            file, filters=self.filters, compression=job.meta.compressed
+        ) as w:
             w.writeall(it)

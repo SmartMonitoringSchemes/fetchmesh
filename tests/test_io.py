@@ -8,83 +8,95 @@ class BlackholeFilter:
         return False
 
 
-def test_basic():
-    file = Path("testfile")
+def test_basic(tmpfile):
     records = [{"test": "test"}]
 
-    with AtlasRecordsWriter(file) as w:
+    with AtlasRecordsWriter(tmpfile) as w:
         for record in records:
             w.write(record)
 
-    with AtlasRecordsReader(file) as r:
+    with AtlasRecordsReader(tmpfile) as r:
         records_ = list(r)
 
     assert records_ == records
 
 
-def test_empty():
-    file = Path("testfile")
+def test_empty(tmpfile):
     records = []
 
-    with AtlasRecordsWriter(file) as w:
+    with AtlasRecordsWriter(tmpfile) as w:
         for record in records:
             w.write(record)
 
-    with AtlasRecordsReader(file) as r:
+    with AtlasRecordsReader(tmpfile) as r:
         records_ = list(r)
 
     assert records_ == records
 
 
-def test_invalid():
-    file = Path("testfile")
+def test_invalid(tmpfile):
     records = [None, {"test": "test"}]
 
-    with AtlasRecordsWriter(file) as w:
+    with AtlasRecordsWriter(tmpfile) as w:
         for record in records:
             w.write(record)
 
-    with AtlasRecordsReader(file) as r:
+    with AtlasRecordsReader(tmpfile) as r:
         records_ = list(r)
 
     assert records_ == records
 
 
-def test_compression():
-    file = Path("testfile")
-    records = [{"test": "test"}]
+def test_compression(tmpfile):
+    records = [{"test": "test"}, {"123": 123}]
 
-    with AtlasRecordsWriter(file, compression=True) as w:
+    with AtlasRecordsWriter(tmpfile, compression=True) as w:
         for record in records:
             w.write(record)
 
-    with AtlasRecordsReader(file) as r:
+    with AtlasRecordsReader(tmpfile) as r:
         records_ = list(r)
 
     assert records_ == records
 
 
-def test_filters():
-    file = Path("testfile")
+def test_append(tmpfile):
+    records = [{"test": "test"}, {"123": 123}]
+
+    for compression in [False, True]:
+        with AtlasRecordsWriter(tmpfile, compression=compression) as w:
+            for record in records:
+                w.write(record)
+
+        with AtlasRecordsWriter(tmpfile, append=True, compression=compression) as w:
+            for record in records:
+                w.write(record)
+
+        with AtlasRecordsReader(tmpfile) as r:
+            records_ = list(r)
+
+        assert records_ == [*records, *records]
+
+
+def test_filters(tmpfile):
     filters = [BlackholeFilter()]
     records = [{"test": "test"}]
 
-    with AtlasRecordsWriter(file, filters=filters, compression=True) as w:
+    with AtlasRecordsWriter(tmpfile, filters=filters, compression=True) as w:
         for record in records:
             w.write(record)
 
-    with AtlasRecordsReader(file) as r:
+    with AtlasRecordsReader(tmpfile) as r:
         records_ = list(r)
 
     assert records_ == []
 
 
-def test_exception():
-    file = Path("testfile")
+def test_exception(tmpfile):
     filters = [BlackholeFilter()]
     records = [{"test": "test"}]
-    with AtlasRecordsWriter(file, filters=filters, compression=True) as w:
+    with AtlasRecordsWriter(tmpfile, filters=filters, compression=True) as w:
         for record in records:
             w.write(record)
         raise ValueError()
-    assert not file.exists()
+    assert not tmpfile.exists()

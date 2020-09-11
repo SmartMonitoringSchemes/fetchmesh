@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import pytest
 
@@ -11,3 +12,9 @@ def no_requests(monkeypatch):
     cache_get = lambda self, key, fn, *args, **kwargs: fn()
     monkeypatch.setattr("mtoolbox.cache.Cache.get", cache_get)
     monkeypatch.setattr("requests.sessions.Session.request", requests_mock())
+
+
+@pytest.fixture
+def tmpfile():
+    with TemporaryDirectory() as tmpdir:
+        yield Path(tmpdir) / "tmpfile"

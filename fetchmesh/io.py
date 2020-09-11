@@ -4,11 +4,11 @@ from dataclasses import dataclass, field
 from io import TextIOWrapper
 from pathlib import Path
 from traceback import print_exception
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 
 from mtoolbox.magic import CompressionFormat, detect_compression
 from mtoolbox.optional import tryfunc
-from zstandard import ZstdCompressor, ZstdDecompressor
+from zstandard import ZstdCompressionDict, ZstdCompressor, ZstdDecompressor
 
 from .filters import StreamFilter
 from .transformers import RecordTransformer
@@ -16,36 +16,97 @@ from .transformers import RecordTransformer
 json_trydumps = tryfunc(json.dumps, default="")
 json_tryloads = tryfunc(json.loads)
 
+dictionary = Path(__file__).parent / "mocks" / "dictionary"
+
+# size_bytes msm_id prb_id
+# UL(8b)     UL(8b) UL(8b)
+LogEntry = struct.Struct("LLL")
+
 
 @dataclass
 class AtlasRecordsWriter:
     file: Path
     filters: List[StreamFilter[dict]] = field(default_factory=list)
-    compression: bool = False
     append: bool = False
+
+    # Record the offset (in bytes) of each record.
+    # See `LogEntry`.
+    log: bool = False
+
+    # NOTE: We use the one-shot compression API and write one frame per record.
+    # This results in larger files than a single frame for all the records,
+    # but it allows us to build an index and make the file seekable.
+    # We use a dictionary to reduce the size of the compressed records.
+    compression: bool = False
+    compression_ctx: Optional[ZstdCompressor] = None
+
+    @property
+    def log_file(self) -> Path:
+        return self.file.with_suffix(".index")
+
+    def __post_init__(self):
+        self.file = Path(self.file)
 
     def __enter__(self):
         mode = "ab" if self.append else "wb"
+
+        # (1) Open the output file
         self.f = self.file.open(mode)
+
+        # (2) Open the log file
+        if self.log:
+            self.log_f = self.log_file.open(mode)
+
+        # (3) Setup the compression context
         if self.compression:
-            ctx = ZstdCompressor()
-            self.f = ctx.stream_writer(self.f)
+            dict_data = ZstdCompressionDict(dictionary.read_bytes())
+            self.compression_ctx = ZstdCompressor(dict_data=dict_data)
+
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        # (1) Close the output file
         self.f.flush()
         self.f.close()
+
+        # (2) Close the log file
+        if self.log:
+            self.log_f.flush()
+            self.log_f.close()
+
+        # (3) Handle exceptions
+        # NOTE: In append mode, we do not delete the file.
         if exc_type:
-            self.file.unlink()
+            if not self.append:
+                self.file.unlink()
+            if not self.append and self.log_file.exists():
+                self.log_file.unlink()
             print_exception(exc_type, exc_value, traceback)
+
+        # TODO: Do not return True to propagate KeyboardInterrupt?
         return True
 
     def write(self, record: dict):
+        # (1) Filter the record
         for filter_ in self.filters:
             if not filter_.keep(record):
                 return
-        record_ = json_trydumps(record) + "\n"
-        self.f.write(record_.encode("utf-8"))
+
+        # (2) Serialize and encode the record
+        data = json_trydumps(record) + "\n"
+        data = data.encode("utf-8")
+
+        # (3) Compresse the record
+        if self.compression_ctx:
+            data = self.compression_ctx.compress(data)
+
+        # (4) Update the log
+        if self.log:
+            entry = LogEntry.pack(len(data), record["msm_id"], record["prb_id"],)
+            self.log_f.write(entry)
+
+        # (5) Write the record to the output file
+        self.f.write(data)
 
     def writeall(self, records: Iterable[dict]):
         for record in records:
@@ -65,8 +126,9 @@ class AtlasRecordsReader:
         codec = detect_compression(self.file)
         self.f = self.file.open("rb")
         if codec == CompressionFormat.Zstandard:
-            ctx = ZstdDecompressor()
-            self.f = ctx.stream_reader(self.f)
+            dict_data = ZstdCompressionDict(dictionary.read_bytes())
+            ctx = ZstdDecompressor(dict_data=dict_data)
+            self.f = ctx.stream_reader(self.f, read_across_frames=True)
         self.f = TextIOWrapper(self.f, "utf-8")
         stream = filter(
             lambda record: all(f.keep(record) for f in self.filters),
