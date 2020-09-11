@@ -90,6 +90,16 @@ class AtlasResultsMeta:
     def from_measurement(cls, msm: AtlasMeasurement, *args, **kwargs):
         return cls(msm.af, msm.type, msm.id, *args, **kwargs)
 
+    def __str__(self):
+        return "<{} {} #{} {} → {}{}>".format(
+            self.af.name,
+            self.type.name,
+            self.msm_id,
+            self.start_date.isoformat(),
+            self.stop_date.isoformat(),
+            " (compressed)" if self.compressed else "",
+        )
+
 
 @dataclass(frozen=True)
 class IPASNMeta:
@@ -112,6 +122,9 @@ class IPASNMeta:
             unwrap(Collector.from_fqdn(fqdn)),
             dt.datetime.strptime(datetime, "%Y%m%d%H%M").replace(tzinfo=UTC),
         )
+
+    def __str__(self):
+        return "<IPASN {} {}>".format(self.collector.fqdn, self.datetime.isoformat())
 
 
 @dataclass(frozen=True)
@@ -143,3 +156,6 @@ class RIBMeta:
             unwrap(Collector.from_fqdn(fqdn)),
             dt.datetime.strptime(datetime, "%Y%m%d%H%M").replace(tzinfo=UTC),
         )
+
+    def __str__(self):
+        return "<RIBMeta {} {}>".format(self.collector.fqdn, self.datetime.isoformat())
