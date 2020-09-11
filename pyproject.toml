@@ -17,6 +17,7 @@ pytz = "^2020.1"
 py-radix = "^0.10.0"
 requests = "^2.22.0"
 rich = "^3.3.2"
+tenacity = "^6.2.0"
 tqdm = "^4.46.0"
 zstandard = "^0.12.0"
 

@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 from ..atlas import AtlasClient, MeasurementAF, MeasurementType
 from ..ext import bprint, format_args
-from ..fetcher import SingleFileFetcher
+from ..fetcher import FetchJob, SimpleFetcher
 from ..filters import (
     AnchorRegionFilter,
     HalfPairFilter,
@@ -27,12 +27,12 @@ from ..meta import AtlasResultsMeta
 
 
 def cleanup():
-    # The hardcore way...
-    # multiprocessing is buggy and leaves zombies everywhere...
+    # multiprocessing is buggy and leaves zombies everywhere,
+    # so let's do it the hard way.
     parent = psutil.Process()
     children = parent.children(recursive=True) + [parent]
     for child in children:
-        print("Sending SIGTERM to {}".format(child.pid))
+        print("Terminating process {}".format(child.pid))
         child.send_signal(signal.SIGTERM)
     psutil.wait_procs(children)
 
@@ -223,7 +223,7 @@ def fetch(**args):
     else:
         split = stop_date - start_date
 
-    metas = []
+    jobs = []
     for target, probes in pairs.by_target():
         measurement = mesh.find_measurement(target, args["af"], args["type"])
         if not measurement:
@@ -237,9 +237,9 @@ def fetch(**args):
                 date + split,
                 args["compress"],
             )
-            metas.append((meta, probes))
+            jobs.append(FetchJob(meta, probes))
 
-    fetcher = SingleFileFetcher(outdir)
+    fetcher = SimpleFetcher(outdir)
 
     # Stop here if we perform a dry run
     if args["dry_run"]:
@@ -249,9 +249,8 @@ def fetch(**args):
     atexit.register(cleanup)
 
     with ProcessPoolExecutor(args["jobs"]) as executor:
-        # Should we retry on error?
-        futures = [executor.submit(fetcher.fetch, meta) for meta in metas]
-        futures = tqdm(as_completed(futures), total=len(metas))
+        futures = [executor.submit(fetcher.fetch, job) for job in jobs]
+        futures = tqdm(as_completed(futures), total=len(jobs))
         for future in futures:
             try:
                 future.result()
