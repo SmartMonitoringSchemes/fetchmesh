@@ -30,7 +30,7 @@ def cleanup():
     # multiprocessing is buggy and leaves zombies everywhere,
     # so let's do it the hard way.
     parent = psutil.Process()
-    children = parent.children(recursive=True) + [parent]
+    children = parent.children(recursive=True)  # + [parent]
     for child in children:
         print("Terminating process {}".format(child.pid))
         child.send_signal(signal.SIGTERM)
@@ -254,7 +254,7 @@ def fetch(**args):
         for future in futures:
             try:
                 future.result()
-            except:
+            except Exception:
                 print_exc()
 
     atexit.unregister(cleanup)
