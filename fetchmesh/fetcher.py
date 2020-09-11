@@ -43,6 +43,7 @@ class SimpleFetcher:
             log.debug("%s already exists, skipping...", file)
         else:
             self._fetch(job, file)
+        return job
 
     @retry(
         reraise=True,
