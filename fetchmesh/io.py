@@ -83,8 +83,8 @@ class AtlasRecordsWriter:
                 self.log_file.unlink()
             print_exception(exc_type, exc_value, traceback)
 
-        # TODO: Do not return True to propagate KeyboardInterrupt?
-        return True
+        # Do not reraise exceptions, excepted for KeyboardInterrupt.
+        return exc_type is not KeyboardInterrupt
 
     def write(self, record: dict):
         # (1) Filter the record
@@ -102,7 +102,7 @@ class AtlasRecordsWriter:
 
         # (4) Update the log
         if self.log:
-            entry = LogEntry.pack(len(data), record["msm_id"], record["prb_id"],)
+            entry = LogEntry.pack(len(data), record["msm_id"], record["prb_id"])
             self.log_f.write(entry)
 
         # (5) Write the record to the output file
