@@ -35,6 +35,7 @@ class SimpleFetcher:
     directory: Path
     client: AtlasClient = field(default_factory=AtlasClient)
     filters: List = field(default_factory=list)
+    log: bool = False
     # retry_on_timeout: bool = True
 
     def fetch(self, job: FetchJob):
@@ -59,6 +60,6 @@ class SimpleFetcher:
         # TODO: Is there a risk of duplicate entries if
         # there is a timeout in the middle of a write?
         with AtlasRecordsWriter(
-            file, filters=self.filters, compression=job.meta.compressed
+            file, filters=self.filters, compression=job.meta.compressed, log=self.log
         ) as w:
             w.writeall(it)
