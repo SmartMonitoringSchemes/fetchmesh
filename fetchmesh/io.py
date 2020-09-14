@@ -17,31 +17,63 @@ json_trydumps = tryfunc(json.dumps, default="")
 json_tryloads = tryfunc(json.loads)
 
 dictionary = Path(__file__).parent / "mocks" / "dictionary"
+"""
+Path to the zstandard dictionary used to compress the records.
+Useful to decompress manually the records.
+"""
 
-# size_bytes msm_id prb_id
-# UL(8b)     UL(8b) UL(8b)
 LogEntry = struct.Struct("LLL")
+"""
+Binary structure containing the size, the measurement ID, and the probe ID for a record.
+This is useful for indexing the content of a result file without decompressing and parsing
+the JSON.
+If the file is compressed, the size is the size of the zstandard frame.
+The fields are unsigned longs of 8 bytes each : `size_bytes`, `msm_id`, `prb_id`.
+"""
 
 
 @dataclass
 class AtlasRecordsWriter:
+    """
+    Write Atlas results in ND-JSON format.
+
+    .. code-block:: python
+
+        from fetchmesh.io import AtlasRecordsWriter
+        with AtlasRecordsWriter("results.ndjson") as w:
+            w.write({"msm_id": 1001, "prb_id": 1, "...": "..."})
+    """
+
     file: Path
+    "Output file path."
+
     filters: List[StreamFilter[dict]] = field(default_factory=list)
+    "List of filters to apply before writing the records."
+
     append: bool = False
+    """
+    Whether to create a new file, or to append the records to an existing file.
+    If append is set to false, and the output file already exists, it will be deleted.
+    When append is set to false, the output file will be deleted if an exception happens.
+    """
 
-    # Record the offset (in bytes) of each record.
-    # See `LogEntry`.
     log: bool = False
+    "Record the size (in bytes) of each record. See :any:`LogEntry`."
 
-    # NOTE: We use the one-shot compression API and write one frame per record.
-    # This results in larger files than a single frame for all the records,
-    # but it allows us to build an index and make the file seekable.
-    # We use a dictionary to reduce the size of the compressed records.
     compression: bool = False
-    compression_ctx: Optional[ZstdCompressor] = None
+    """
+    Compresse the records using zstandard.
+    We use the one-shot compression API and write one frame per record.
+    This results in larger files than a single frame for all the records,
+    but it allows us to build an index and make the file seekable.
+    We use a pre-built dictionary (see :any:`dictionary`) to reduce the size of the compressed records.
+    """
+
+    compression_ctx: Optional[ZstdCompressor] = field(default=None, init=False)
 
     @property
     def log_file(self) -> Path:
+        "Path to the (optional) log file."
         return self.file.with_suffix(self.file.suffix + ".log")
 
     def __post_init__(self):
@@ -87,6 +119,8 @@ class AtlasRecordsWriter:
         return exc_type is not KeyboardInterrupt
 
     def write(self, record: dict):
+        "Write a single record."
+
         # (1) Filter the record
         for filter_ in self.filters:
             if not filter_.keep(record):
@@ -109,15 +143,46 @@ class AtlasRecordsWriter:
         self.f.write(data)
 
     def writeall(self, records: Iterable[dict]):
+        "Write all the records."
+
         for record in records:
             self.write(record)
 
 
 @dataclass
 class AtlasRecordsReader:
+    """
+    Read Atlas results in ND-JSON format.
+    Automatically handles compressed files.
+
+    .. code-block:: python
+
+        from fetchmesh.io import AtlasRecordsReader
+
+        # From a single file.
+        with AtlasRecordsReader("results.ndjson") as r:
+            for record in r:
+                print(record)
+
+        # From multiple files.
+        r = AtlasRecordsReader.all(["results1.ndjson", "results2.ndjson"])
+        for record in r:
+            print(record)
+
+        # From a glob pattern.
+        r = AtlasRecordsReader.glob("mydir/", "*.ndjson")
+        for record in r:
+            print(record)
+    """
+
     file: Path
+    "Input file path."
+
     filters: List[StreamFilter[dict]] = field(default_factory=list)
+    "List of filters to apply when reading the records."
+
     transformers: List[RecordTransformer] = field(default_factory=list)
+    "List of transformers to apply when reading the records."
 
     def __post_init__(self):
         self.file = Path(self.file)
@@ -142,9 +207,12 @@ class AtlasRecordsReader:
         self.f.close()
         if exc_type:
             print_exception(exc_type, exc_value, traceback)
+        # Do not reraise exceptions, excepted for KeyboardInterrupt.
+        return exc_type is not KeyboardInterrupt
 
     @classmethod
     def all(cls, files, **kwargs):
+        "Read multiple files."
         for file in files:
             with cls(Path(file), **kwargs) as rdr:
                 for record in rdr:
@@ -152,5 +220,6 @@ class AtlasRecordsReader:
 
     @classmethod
     def glob(cls, path, pattern, **kwargs):
+        "Read multiple files from a glob pattern."
         files = Path(path).glob(pattern)
         return cls.all(files, **kwargs)
