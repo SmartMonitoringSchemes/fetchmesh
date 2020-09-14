@@ -189,21 +189,34 @@ class AtlasRecordsReader:
 
     def __enter__(self):
         codec = detect_compression(self.file)
+
+        # We keep a reference (`f`) to the original file,
+        # in order to be able to close it on exit.
+        # Calling `close()` on `ZstdDecompressor` does not
+        # close the underlying resource.
         self.f = self.file.open("rb")
+
+        # UTF-8 decoded, decompressed, file
+        self.fb = self.f
+
         if codec == CompressionFormat.Zstandard:
             dict_data = ZstdCompressionDict(dictionary.read_bytes())
             ctx = ZstdDecompressor(dict_data=dict_data)
-            self.f = ctx.stream_reader(self.f, read_across_frames=True)
-        self.f = TextIOWrapper(self.f, "utf-8")
+            self.fb = ctx.stream_reader(self.fb, read_across_frames=True)
+
+        self.fb = TextIOWrapper(self.fb, "utf-8")
+
+        stream = map(json_tryloads, self.fb)
         stream = filter(
-            lambda record: all(f.keep(record) for f in self.filters),
-            map(json_tryloads, self.f),
+            lambda record: all(fn.keep(record) for fn in self.filters), stream
         )
-        for f in self.transformers:
-            stream = map(f, stream)
+        for fn in self.transformers:
+            stream = map(fn, stream)
+
         return stream
 
     def __exit__(self, exc_type, exc_value, traceback):
+        self.fb.close()
         self.f.close()
         if exc_type:
             print_exception(exc_type, exc_value, traceback)
