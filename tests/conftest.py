@@ -1,6 +1,4 @@
 import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
 
 import pytest
 
@@ -15,6 +13,5 @@ def no_requests(monkeypatch):
 
 
 @pytest.fixture
-def tmpfile():
-    with TemporaryDirectory() as tmpdir:
-        yield Path(tmpdir) / "tmpfile"
+def tmpfile(tmp_path_factory):
+    return tmp_path_factory.mktemp("tmp") / "tmpfile"
