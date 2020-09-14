@@ -109,7 +109,8 @@ def describe(date):
         table.add_column(str(x))
 
     table.add_row(
-        Text("Anchors", style="bold"), *[str(count) for count in counts.values()],
+        Text("Anchors", style="bold"),
+        *[str(count) for count in counts.values()],
     )
     table.add_row(
         Text("Pairs", style="bold"),

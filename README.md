@@ -15,7 +15,7 @@
 fetchmesh is a tool to simplify working with Atlas [anchoring mesh](https://atlas.ripe.net/about/anchors/) measurements. It can download results concurrently, process large files in streaming without requiring a large amount of memory, and clean measurement results. It uses Facebook [Zstandard](https://facebook.github.io/zstd/) algorithm for fast data compression.
 
 - [**Documentation**](https://github.com/SmartMonitoringSchemes/fetchmesh/raw/gh-pages/fetchmesh.pdf) — Consult the quick start guide and the documentation.
-- [**Issues**](https://github.com/SmartMonitoringSchemes/fetchmesh/issues) — See what is broken / currently not working. 
+- [**Issues**](https://github.com/SmartMonitoringSchemes/fetchmesh/issues) — See what is broken / currently not working.
 
 ## :rocket: Quick Start
 

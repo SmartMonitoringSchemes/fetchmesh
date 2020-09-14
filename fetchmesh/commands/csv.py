@@ -27,7 +27,11 @@ def csv():
 
 @csv.command()
 @click.option(
-    "--dir", default=".", show_default=True, type=PathParam(), help="Output directory",
+    "--dir",
+    default=".",
+    show_default=True,
+    type=PathParam(),
+    help="Output directory",
 )
 @click.option(
     "--mode",

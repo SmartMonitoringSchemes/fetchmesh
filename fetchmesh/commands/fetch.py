@@ -120,7 +120,9 @@ def default_dir(
     help="Number of parallel jobs to run",
 )
 @click.option(
-    "--dir", type=PathParam(), help="Output directory",
+    "--dir",
+    type=PathParam(),
+    help="Output directory",
 )
 @click.option(
     "--dry-run",
