@@ -37,7 +37,7 @@ class AtlasResultsMeta:
 
     compressed: bool
 
-    PATTERN = re.compile(r"(\w+)_v(\d)_(-?\d+)_(-?\d+)_(-?\d+)\.([\.\w]+)")
+    PATTERN = re.compile(r"(\w+)_v(\d)_(-?\d+)_(-?\d+)_(-?\d+)\.(ndjson|ndjson\.zst)$")
 
     def remote_path(self, probes=[]) -> str:
         path = f"/measurements/{self.msm_id}/results"

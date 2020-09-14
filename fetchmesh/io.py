@@ -42,7 +42,7 @@ class AtlasRecordsWriter:
 
     @property
     def log_file(self) -> Path:
-        return self.file.with_suffix(".log")
+        return self.file.with_suffix(self.file.suffix + ".log")
 
     def __post_init__(self):
         self.file = Path(self.file)
