@@ -43,6 +43,7 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+autodoc_member_order = "groupwise"
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -70,5 +71,4 @@ html_static_path = ["_static"]
 
 # latex_engine = 'lualatex'
 # latex_domain_indices = False
-
-autodoc_member_order = "groupwise"
+latex_elements = {"printindex": r"\footnotesize\raggedright\printindex"}
