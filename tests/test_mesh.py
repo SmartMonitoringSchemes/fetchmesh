@@ -11,7 +11,6 @@ def test_pairs_indexing():
     assert pairs[1] == data[1]
 
 
-@pytest.mark.online
 def test_pairs_json():
     mesh = AnchoringMesh.from_api()
     pairs = mesh.pairs[:100]
@@ -20,7 +19,6 @@ def test_pairs_json():
     assert pairsp == pairs
 
 
-@pytest.mark.online
 def test_mesh_json():
     mesh = AnchoringMesh.from_api()
     mesh.to_json("mesh.json")

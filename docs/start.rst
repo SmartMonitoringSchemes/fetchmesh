@@ -145,7 +145,7 @@ Tool                                                Usage           Command
 `isort <https://github.com/timothycrosley/isort>`__ Import sorting  ``poetry run pre-commit run --all-files``
 `mypy <https://github.com/python/mypy>`__           Static typing   ``poetry run pre-commit run --all-files``
 `pylint <https://www.pylint.org/>`__                Linting         ``poetry run pre-commit run --all-files``
-`pytest <https://docs.pytest.org/en/latest/>`__     Unit tests      ``poetry run pytest`` and ``poetry run pytest -m "not online"``
+`pytest <https://docs.pytest.org/en/latest/>`__     Unit tests      ``poetry run pytest``
 =================================================== =============== =========================================
 
 Release

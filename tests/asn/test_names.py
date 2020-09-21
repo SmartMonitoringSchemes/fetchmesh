@@ -11,7 +11,6 @@ def test_from_file():
     assert names.mapping[288] == "ESA European Space Agency (ESA), EU"
 
 
-@pytest.mark.online
 def test_from_url():
     names = ASNames.from_url()
     assert names.mapping[288] == "ESA European Space Agency (ESA), EU"

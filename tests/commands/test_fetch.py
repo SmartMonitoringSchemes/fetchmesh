@@ -4,7 +4,6 @@ from click.testing import CliRunner
 from fetchmesh.cli import cli
 
 
-@pytest.mark.online
 def test_fetch():
     runner = CliRunner()
 
@@ -15,7 +14,6 @@ def test_fetch():
         assert result.exit_code == 0
 
 
-@pytest.mark.online
 def test_fetch_pairs():
     runner = CliRunner()
 

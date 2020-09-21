@@ -35,7 +35,6 @@ fetchmesh = 'fetchmesh.cli:cli'
 
 [tool.pytest.ini_options]
 addopts = "--cov=fetchmesh --cov-report=xml"
-markers = ["online: tests that performs external requests"]
 
 [tool.pylint.messages_control]
 disable = """
