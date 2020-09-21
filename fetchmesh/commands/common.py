@@ -1,8 +1,10 @@
 import datetime as dt
 from enum import Enum
 
-import rich
 from click import Option
+from rich.console import Console
+
+console = Console()
 
 
 def format_args(args, command):
@@ -38,4 +40,4 @@ def print_args(args, command):
 
 
 def print_kv(key, value):
-    rich.print(f"[bold]{key}:[/bold] {value}")
+    console.print(f"[bold]{key}:[/bold] {value}", highlight=False)

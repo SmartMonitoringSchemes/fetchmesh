@@ -10,9 +10,9 @@ from mtoolbox.itertools import groupby_stream
 from pandas import DataFrame, Timedelta, concat
 from tqdm import tqdm
 
-from ..ext import print_kv
 from ..io import AtlasRecordsReader, AtlasRecordsWriter
 from ..transformers import TracerouteFlatIPTransformer
+from .common import print_kv
 
 # TODO: Implement parallel processing
 

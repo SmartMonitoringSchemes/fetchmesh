@@ -5,14 +5,13 @@ import click
 from mtoolbox.click import ParsedDate
 from mtoolbox.itertools import countby
 from rich import box
-from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 
 from ..atlas import MeasurementAF, MeasurementType
-from ..ext import print_kv
 from ..filters import HalfPairFilter, MeasurementDateFilter, SelfPairFilter
 from ..mesh import AnchoringMesh
+from .common import console, print_kv
 
 
 def expected_pairs(n_anchors, no_self, half):
@@ -37,7 +36,6 @@ def describe(date):
     Anchoring mesh overview.
     """
 
-    console = Console()
     mesh = AnchoringMesh.from_api().filter(MeasurementDateFilter.running(date, date))
 
     # TODO: Number of distinct pairs counted, vs theoretical number
