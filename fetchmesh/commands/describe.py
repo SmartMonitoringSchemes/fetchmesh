@@ -30,7 +30,7 @@ def expected_pairs(n_anchors, no_self, half):
     default="now",
     show_default=True,
     type=ParsedDate(settings={"RETURN_AS_TIMEZONE_AWARE": True, "TIMEZONE": "UTC"}),
-    help="Pairs should exist between `start-date` and `stop-date`.",
+    help="Keep only the pairs for which measurements were running on `date`.",
 )
 def describe(date):
     """
