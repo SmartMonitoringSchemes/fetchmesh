@@ -24,6 +24,7 @@ class UnpackWorker:
         stop_timestamp = metas[-1].stop_timestamp
         key = lambda x: (x["msm_id"], x["prb_id"])
         seen = set()
+        skip = set()
         for meta in metas:
             file = self.src.joinpath(meta.filename)
             with AtlasRecordsReader(file) as r:
@@ -38,13 +39,15 @@ class UnpackWorker:
                         pair[1],
                     )
                     file = self.dst.joinpath(name)
-                    # Overwrite mode: ensure that there is no prior file.
-                    if self.mode == "overwrite" and not pair in seen:
-                        if file.exists():
+                    if pair not in seen:
+                        # Overwrite mode: delete prior file.
+                        if self.mode == "overwrite" and file.exists():
                             file.unlink()
+                        # Skip mode: skip this pair.
+                        if self.mode == "skip" and file.exists():
+                            skip.add(pair)
                         seen.add(pair)
-                    # Skip mode: skip if file already exists.
-                    if self.mode == "skip" and file.exists():
+                    if pair in skip:
                         continue
                     with AtlasRecordsWriter(file, compression=False, append=True) as w:
                         w.writeall(records)
@@ -57,7 +60,9 @@ class UnpackWorker:
     help="Filter measurements IP address family",
 )
 @click.option(
-    "--type", type=EnumChoice(MeasurementType, str), help="Filter measurements type",
+    "--type",
+    type=EnumChoice(MeasurementType, str),
+    help="Filter measurements type",
 )
 @click.option(
     "--start-date",
@@ -100,7 +105,11 @@ def unpack(**args):
     files = args["src"].glob("*.ndjson*")
     index = defaultdict(list)
     for file in files:
-        meta = AtlasResultsMeta.from_filename(file.name)
+        try:
+            meta = AtlasResultsMeta.from_filename(file.name)
+        except ValueError:
+            print(f"Unknown file: {file}")
+            continue
         if args["af"] and meta.af != args["af"]:
             continue
         if args["type"] and meta.type != args["type"]:
