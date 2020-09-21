@@ -1,5 +1,4 @@
 import datetime as dt
-import sys
 from enum import Enum
 
 import click
@@ -7,7 +6,6 @@ import rich
 from click import Option
 
 
-# TODO: Don't print options (only args)
 def format_args(args, command):
     tokens = []
     for param in command.params:

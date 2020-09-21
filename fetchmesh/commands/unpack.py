@@ -7,7 +7,7 @@ from mtoolbox.itertools import groupby_stream
 from tqdm import tqdm
 
 from ..atlas import MeasurementAF, MeasurementType
-from ..ext import format_args, print_kv
+from ..ext import print_args, print_kv
 from ..io import AtlasRecordsReader, AtlasRecordsWriter
 from ..meta import AtlasResultsMeta
 
@@ -94,7 +94,7 @@ def unpack(**args):
     """
     Split measurement results by origin-destination pairs.
     """
-    print_kv("Args", format_args(args, unpack))
+    print_args(args, unpack)
 
     if not args["dst"]:
         args["dst"] = args["src"].with_name(args["src"].name + "_pairs")

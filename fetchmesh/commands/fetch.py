@@ -12,7 +12,7 @@ from mtoolbox.datetime import datetimerange, totimestamp
 from tqdm import tqdm
 
 from ..atlas import AtlasClient, MeasurementAF, MeasurementType
-from ..ext import format_args, print_kv
+from ..ext import format_args, print_args, print_kv
 from ..fetcher import FetchJob, SimpleFetcher
 from ..filters import (
     AnchorRegionFilter,
@@ -154,7 +154,7 @@ def fetch(**args):
     """
     Fetch anchoring mesh measurement results from RIPE Atlas.
     """
-    print_kv("Args", format_args(args, fetch))
+    print_args(args, fetch)
 
     start_date = args["start_date"]
     stop_date = args["stop_date"]
