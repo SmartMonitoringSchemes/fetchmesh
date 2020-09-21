@@ -9,7 +9,7 @@ from .filters import AnchorFilter, MeasurementFilter
 
 
 def serialize(o):
-    if isinstance(o, AtlasAnchor) or isinstance(o, AtlasMeasurement):
+    if isinstance(o, (AtlasAnchor, AtlasMeasurement)):
         return o.to_dict()
     raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
 

@@ -3,7 +3,7 @@ import re
 from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Union
+from typing import List, Optional, Union
 from urllib.parse import urlencode
 
 from mtoolbox.datetime import parsetimestamp
@@ -39,7 +39,7 @@ class AtlasResultsMeta:
 
     PATTERN = re.compile(r"(\w+)_v(\d)_(-?\d+)_(-?\d+)_(-?\d+)\.(ndjson|ndjson\.zst)$")
 
-    def remote_path(self, probes=[]) -> str:
+    def remote_path(self, probes: Optional[List[int]] = None) -> str:
         path = f"/measurements/{self.msm_id}/results"
         params = {
             "anchors-only": True,

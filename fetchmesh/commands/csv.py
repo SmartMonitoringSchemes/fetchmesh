@@ -22,7 +22,6 @@ def csv():
     """
     Convert measurement results to CSV.
     """
-    pass
 
 
 @csv.command()

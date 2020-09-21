@@ -67,7 +67,7 @@ class Collector(ABC):
             name, service = m.groups()
             if service == "ripe":
                 return RISCollector(name)
-            elif service == "routeviews" or service == "oregon-ix":
+            if service in ("routeviews", "oregon-ix"):
                 return RouteViewsCollector(name)
         return None
 

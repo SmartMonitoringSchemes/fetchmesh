@@ -127,11 +127,11 @@ class TracerouteFlatIPTransformer(RecordTransformer):
                 addr = reply.get("from")
                 if self.drop_private and addr and self.is_private(addr):
                     addr = None
-                if self.insert_none or addr != None:
+                if self.insert_none or addr is not None:
                     addrs.append(addr)
                 for field in self.extras_fields:
                     val = reply.get(field)
-                    if self.insert_none or val != None:
+                    if self.insert_none or val is not None:
                         extras_[field].append(val)
             if self.as_set:
                 addrs = set(addrs)  # type: ignore
