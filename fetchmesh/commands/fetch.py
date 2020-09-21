@@ -12,7 +12,7 @@ from mtoolbox.datetime import datetimerange, totimestamp
 from tqdm import tqdm
 
 from ..atlas import AtlasClient, MeasurementAF, MeasurementType
-from ..ext import bprint, format_args
+from ..ext import format_args, print_kv
 from ..fetcher import FetchJob, SimpleFetcher
 from ..filters import (
     AnchorRegionFilter,
@@ -154,7 +154,7 @@ def fetch(**args):
     """
     Fetch anchoring mesh measurement results from RIPE Atlas.
     """
-    bprint("Args", format_args(args))
+    print_kv("Args", format_args(args, fetch))
 
     start_date = args["start_date"]
     stop_date = args["stop_date"]
@@ -163,15 +163,15 @@ def fetch(**args):
 
     defdir = default_dir(args["af"], args["type"], start_date, stop_date)
     outdir = args["dir"] or defdir
-    bprint("Path", outdir.absolute())
+    print_kv("Path", outdir.absolute())
 
     mesh = AnchoringMesh.from_api()
-    bprint("Anchors", len(mesh.anchors))
+    print_kv("Anchors", len(mesh.anchors))
 
     # We load pairs either:
     # 1) Directly from a file
     if args["load_pairs"]:
-        bprint("Pairs File", args["load_pairs"])
+        print_kv("Pairs File", args["load_pairs"])
         pairs = AnchoringMeshPairs.from_json(args["load_pairs"])
     # 2) From the anchoring mesh
     else:
@@ -183,10 +183,10 @@ def fetch(**args):
             filters.append(AnchorRegionFilter(args["region"]))
         for f in filters:
             mesh = mesh.filter(f)
-            bprint(f"Anchors > {type(f).__name__}", len(mesh.anchors))
+            print_kv(f"Anchors > {type(f).__name__}", len(mesh.anchors))
         pairs = mesh.pairs
 
-    bprint("Pairs", len(pairs))
+    print_kv("Pairs", len(pairs))
 
     filters = []
     if args["half"]:
@@ -201,23 +201,23 @@ def fetch(**args):
 
     for f in filters:
         pairs = pairs.filter(f)
-        bprint(f"Pairs > {type(f).__name__}", len(pairs))
+        print_kv(f"Pairs > {type(f).__name__}", len(pairs))
 
     if args["save_pairs"]:
         pairs_file = outdir.with_suffix(".pairs")
         meta_file = outdir.with_suffix(".meta")
-        bprint(f"Pairs File", pairs_file)
+        print_kv(f"Pairs File", pairs_file)
         pairs.to_json(pairs_file)
-        bprint(f"Meta File", meta_file)
+        print_kv(f"Meta File", meta_file)
         args_blacklist = {"dry_run", "sample_pairs", "save_pairs"}
         args_fetch = {k: v for k, v in args.items() if k not in args_blacklist}
         args_fetch["load_pairs"] = pairs_file
         meta_str = f"# Run this file with `bash {meta_file}`."
         meta_str += f"\n# Generated on {dt.datetime.now()}."
         meta_str += f"\n# Command that generated this file:"
-        meta_str += f"\n# fetchmesh fetch {format_args(args)}"
+        meta_str += f"\n# fetchmesh fetch {format_args(args, fetch)}"
         meta_str += f"\n# Command to fetch the results:"
-        meta_str += f"\nfetchmesh fetch {format_args(args_fetch)}"
+        meta_str += f"\nfetchmesh fetch {format_args(args_fetch, fetch)}"
         meta_file.write_text(meta_str)
 
     if args["split"]:

@@ -10,7 +10,7 @@ from rich.table import Table
 from rich.text import Text
 
 from ..atlas import MeasurementAF, MeasurementType
-from ..ext import bprint
+from ..ext import print_kv
 from ..filters import HalfPairFilter, MeasurementDateFilter, SelfPairFilter
 from ..mesh import AnchoringMesh
 
@@ -42,20 +42,20 @@ def describe(date):
 
     # TODO: Number of distinct pairs counted, vs theoretical number
     # TODO: Table per country, per AS (tops), plot distribution ?
-    bprint("Number of active anchors", len(mesh.anchors))
-    bprint("Number of running measurements", len(mesh.measurements))
+    print_kv("Number of active anchors", len(mesh.anchors))
+    print_kv("Number of running measurements", len(mesh.measurements))
 
     pairs_obs = len(mesh.pairs)
     pairs_exp = expected_pairs(len(mesh.anchors), False, False)
-    bprint("Number of origin-destination pairs (all)", f"{pairs_obs}/{pairs_exp}")
+    print_kv("Number of origin-destination pairs (all)", f"{pairs_obs}/{pairs_exp}")
 
     pairs_obs = len(mesh.pairs.filter(SelfPairFilter()))
     pairs_exp = expected_pairs(len(mesh.anchors), True, False)
-    bprint("Number of origin-destination pairs (noself)", f"{pairs_obs}/{pairs_exp}")
+    print_kv("Number of origin-destination pairs (noself)", f"{pairs_obs}/{pairs_exp}")
 
     pairs_obs = len(mesh.pairs.filter(SelfPairFilter()).filter(HalfPairFilter()))
     pairs_exp = expected_pairs(len(mesh.anchors), True, True)
-    bprint(
+    print_kv(
         "Number of origin-destination pairs (noself,half)", f"{pairs_obs}/{pairs_exp}"
     )
 

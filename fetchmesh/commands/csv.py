@@ -10,7 +10,7 @@ from mtoolbox.itertools import groupby_stream
 from pandas import DataFrame, Timedelta, concat
 from tqdm import tqdm
 
-from ..ext import bprint
+from ..ext import print_kv
 from ..io import AtlasRecordsReader, AtlasRecordsWriter
 from ..transformers import TracerouteFlatIPTransformer
 
@@ -52,8 +52,8 @@ def ping(files, dir, mode):
     Split Mode (`N` files, `T` rows, `2` columns): ``timestamp, rtt``
     Merge Mode (`N` rows, `T+2` columns): ``msm_id, prb_id, from_ip, to_ip, rtt_t1, rtt_t2, rtt_t3, ...``
     """
-    bprint("Output directory", dir)
-    bprint("Mode", mode)
+    print_kv("Output directory", dir)
+    print_kv("Mode", mode)
 
     # 1. We start by splitting the results by pairs.
     # We do this on disk to save memory, and to sort
