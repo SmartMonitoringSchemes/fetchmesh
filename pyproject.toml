@@ -31,7 +31,7 @@ sphinx = "^3.2"
 sphinx-click = "^2.5"
 
 [tool.poetry.scripts]
-fetchmesh = 'fetchmesh.cli:cli'
+fetchmesh = 'fetchmesh.commands:main'
 
 [tool.pytest.ini_options]
 addopts = "--cov=fetchmesh --cov-report=xml"

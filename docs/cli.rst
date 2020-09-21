@@ -1,6 +1,6 @@
 Command Line Reference
 ======================
 
-.. click:: fetchmesh.cli:cli
+.. click:: fetchmesh.commands:main
    :prog: fetchmesh
    :show-nested:
