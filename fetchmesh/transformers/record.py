@@ -3,7 +3,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from functools import lru_cache
 from ipaddress import ip_address
-from typing import Optional, Tuple
+from typing import Tuple
 
 from radix import Radix
 

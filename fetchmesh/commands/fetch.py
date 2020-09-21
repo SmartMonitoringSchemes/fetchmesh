@@ -11,7 +11,7 @@ from mtoolbox.click import EnumChoice, ParsedDate, PathParam
 from mtoolbox.datetime import datetimerange, totimestamp
 from tqdm import tqdm
 
-from ..atlas import AtlasClient, MeasurementAF, MeasurementType
+from ..atlas import MeasurementAF, MeasurementType
 from ..ext import format_args, print_args, print_kv
 from ..fetcher import FetchJob, SimpleFetcher
 from ..filters import (

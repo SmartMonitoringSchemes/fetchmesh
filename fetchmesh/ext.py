@@ -1,7 +1,6 @@
 import datetime as dt
 from enum import Enum
 
-import click
 import rich
 from click import Option
 

@@ -2,9 +2,7 @@
 # - https://github.com/hadiasghari/pyasn
 # - https://github.com/maxmouchet/goasn
 # Handles multiple origin ASes (from goasn)
-from dataclasses import dataclass
 from io import TextIOWrapper
-from typing import Mapping
 
 from mtoolbox.magic import CompressionFormat, detect_compression
 from radix import Radix

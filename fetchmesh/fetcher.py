@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
 
 from requests.exceptions import ReadTimeout
 from tenacity import (

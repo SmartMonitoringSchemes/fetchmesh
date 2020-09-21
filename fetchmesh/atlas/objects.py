@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Optional, Tuple
+from typing import Optional, Tuple
 
 from cached_property import cached_property
 from mtoolbox.datetime import parsetimestamp

@@ -2,7 +2,6 @@ import json
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from math import ceil
-from pathlib import Path
 from urllib.parse import urlencode
 
 import requests
