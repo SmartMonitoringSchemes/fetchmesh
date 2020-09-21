@@ -7,7 +7,7 @@ from .abstract import StreamFilter
 
 
 class MeasurementFilter(StreamFilter[AtlasMeasurement]):
-    pass
+    ...
 
 
 @dataclass(frozen=True)

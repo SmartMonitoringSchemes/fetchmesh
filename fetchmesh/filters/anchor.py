@@ -9,14 +9,16 @@ from mtoolbox.random import sample_groups
 from ..atlas import AtlasAnchor, AtlasAnchorPair
 from .abstract import BatchFilter, StreamFilter
 
-# TODO: AS sampler
-
 
 class AnchorFilter(StreamFilter[AtlasAnchor]):
-    pass
+    ...
 
 
-@dataclass
+class AnchorPairFilter(BatchFilter[AtlasAnchorPair]):
+    ...
+
+
+@dataclass(frozen=True)
 class AnchorRegionFilter(AnchorFilter):
     region: str
 
@@ -24,6 +26,7 @@ class AnchorRegionFilter(AnchorFilter):
         return x.country.main_region == self.region
 
 
+# TODO: Fix this.
 # @dataclass(frozen=True)
 # class AnchorRegionSampler(AnchorFilter):
 #     k: Union[float, int]
@@ -45,10 +48,6 @@ class AnchorRegionFilter(AnchorFilter):
 #     def filter(self, data):
 #         groups = sample_groups(self.population(data), self.k)
 #         return list(chain.from_iterable(groups))
-
-
-class AnchorPairFilter(BatchFilter[AtlasAnchorPair]):
-    pass
 
 
 @dataclass(frozen=True)
@@ -99,6 +98,7 @@ class PairRegionSampler(AnchorPairFilter):
         return list(chain.from_iterable(groups))
 
 
+@dataclass(frozen=True)
 class HalfPairFilter(AnchorPairFilter):
     """
     Keep only one of the two measurement for each pair

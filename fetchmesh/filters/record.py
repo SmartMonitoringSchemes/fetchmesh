@@ -5,15 +5,20 @@ from ..atlas import MeasurementType
 from .abstract import StreamFilter
 
 
+class RecordFilter(StreamFilter[dict]):
+    ...
+
+
 @dataclass(frozen=True)
-class ProbeIDRecordFilter(StreamFilter[dict]):
+class ProbeIDRecordFilter(RecordFilter):
     probe_ids: Set[int]
 
     def keep(self, data):
         return data["prb_id"] in self.probe_ids
 
 
-class SelfRecordFilter(StreamFilter[dict]):
+@dataclass(frozen=True)
+class SelfRecordFilter(RecordFilter):
     def keep(self, data):
         # TODO: data.get(..., None) for old results ?
         return (data["from"] != data["dst_addr"]) and (
@@ -22,7 +27,7 @@ class SelfRecordFilter(StreamFilter[dict]):
 
 
 @dataclass(frozen=True)
-class RecordTypeFilter(StreamFilter[dict]):
+class RecordTypeFilter(RecordFilter):
     type: MeasurementType
 
     def keep(self, measurement):
