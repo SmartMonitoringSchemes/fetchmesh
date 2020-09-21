@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from fetchmesh.asn import ASNames
+from fetchmesh.bgp import ASNames
 
 
 def test_from_file():

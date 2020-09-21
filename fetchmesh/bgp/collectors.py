@@ -16,7 +16,7 @@ class Collector(ABC):
     .. doctest::
 
         >>> from datetime import datetime
-        >>> from fetchmesh.asn import Collector
+        >>> from fetchmesh.bgp import Collector
         >>> collector = Collector.from_fqdn("route-views2.routeviews.org")
         >>> collector.table_name(datetime(2020, 1, 1, 8))
         'rib.20200101.0800.bz2'
@@ -79,7 +79,7 @@ class RISCollector(Collector):
 
     .. code-block:: python
 
-        from fetchmesh.asn import RISCollector
+        from fetchmesh.bgp import RISCollector
         collector = RISCollector("rrc00")
 
     .. _RIPE Routing Information Service: https://www.ripe.net/analyse/internet-measurements/routing-information-service-ris/ris-raw-data
@@ -110,7 +110,7 @@ class RouteViewsCollector(Collector):
 
     .. code-block:: python
 
-        from fetchmesh.asn import RISCollector
+        from fetchmesh.bgp import RISCollector
         collector = RouteViewsCollector("route-views2")
 
     .. _University of Oregon Route Views Project: http://archive.routeviews.org/

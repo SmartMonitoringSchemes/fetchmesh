@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from fetchmesh.asn import ASNDB
+from fetchmesh.bgp import ASNDB
 
 
 def test_asndb():

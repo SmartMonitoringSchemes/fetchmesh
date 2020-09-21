@@ -43,7 +43,7 @@ Autonomous Systems
 BGP Collectors
 ~~~~~~~~~~~~~~
 
-.. automodule:: fetchmesh.asn.collectors
+.. automodule:: fetchmesh.bgp.collectors
    :members:
    :inherited-members:
 

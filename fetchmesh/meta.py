@@ -10,8 +10,8 @@ from mtoolbox.datetime import parsetimestamp
 from mtoolbox.optional import unwrap
 from pytz import UTC
 
-from .asn import Collector
 from .atlas import AtlasMeasurement, MeasurementAF, MeasurementType
+from .bgp import Collector
 
 
 def meta_from_filename(name: Union[Path, str]):

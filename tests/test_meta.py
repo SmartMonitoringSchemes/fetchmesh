@@ -2,7 +2,7 @@ from hypothesis import given
 from hypothesis.provisional import domains
 from strategies import atlas_results_metas, collector_datetimes, collector_fqdns
 
-from fetchmesh.asn import Collector
+from fetchmesh.bgp import Collector
 from fetchmesh.meta import AtlasResultsMeta, IPASNMeta, RIBMeta, meta_from_filename
 
 

@@ -2,7 +2,7 @@ from datetime import datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from fetchmesh.asn import Collector, RISCollector, RouteViewsCollector
+from fetchmesh.bgp import Collector, RISCollector, RouteViewsCollector
 
 
 def test_from_fqn():
