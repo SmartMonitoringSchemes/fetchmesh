@@ -1,13 +1,16 @@
 Getting Started
 ===============
 
-Prerequisites
--------------
+Requirements
+------------
 
-fetchmesh uses
-`dataclasses <https://docs.python.org/3/library/dataclasses.html>`__
-which are a **Python 3.7** feature. A `Conda
-environment <https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-environments>`__
+fetchmesh is tested on Linux, macOS and Windows (see :ref:`github-workflows`).
+It should work on any platform supported by Python.
+
+fetchmesh requires at-least **Python 3.7** (released in June 2018), notably due to the use of `dataclasses <https://docs.python.org/3/library/dataclasses.html>`_.
+
+If need be, a `Conda
+environment <https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-environments>`_
 with Python 3.7 can be created as follow:
 
 .. code:: bash
@@ -19,8 +22,8 @@ with Python 3.7 can be created as follow:
 Installation
 ------------
 
-Since this package is not public, it is not published to PyPI. Instead
-it can be installed directly from GitHub:
+For now, fetchmesh is a private tool, and as such it is not publised on PyPI, the public Python package index.
+Instead, fetchmesh can be installed with `pip` directly from GitHub:
 
 .. code:: bash
 
@@ -41,8 +44,7 @@ To verify the installation:
    fetchmesh --help
    # Usage: fetchmesh [OPTIONS] COMMAND [ARGS]...
 
-If you want to make changes to the library, see the
-`development <#development>`__ section.
+If you want to make changes to the library, see the :ref:`Development` chapter.
 
 Usage
 -----
@@ -77,13 +79,10 @@ e.g. \ ``fetchmesh fetch --help``.
 Example workflow
 ~~~~~~~~~~~~~~~~
 
-A typical workflow involves the following steps: 1. Fetch *raw*
-measurements results from Atlas API in ``ndjson`` format (one file per
-measurement, one measurement result per line) 2. Convert these
-measurement results in ``csv`` format, either in ``split`` mode (one
-file per origin-destination pair, two columns: timestamp, rtt), or in
-``merge`` mode (one file, one line per origin-destination pair, one
-column per timestamp).
+A typical workflow involves the following steps:
+
+1. Fetch *raw* measurements results from Atlas API in ``ndjson`` format (one file per measurement, one measurement result per line).
+2. Convert these measurement results in ``csv`` format, either in ``split`` mode (one file per origin-destination pair, two columns: timestamp, rtt), or in ``merge`` mode (one file, one line per origin-destination pair, one column per timestamp).
 
 .. code:: bash
 
@@ -109,53 +108,3 @@ column per timestamp).
    head -n 2 merge_1583317062.csv
    # pair,1580511600,1580511840,1580512080,...
    # 1042404_6533,23.976115,24.019383,24.106377,...
-
-Development
------------
-
-The project uses `poetry <https://github.com/python-poetry/poetry>`__
-for dependency management. The minimal development workflow is as
-follow:
-
-.. code:: bash
-
-   git clone git@github.com:maxmouchet/fetchmesh
-   cd fetchmesh
-   poetry install
-   poetry run fetchmesh
-
-Documentation
-~~~~~~~~~~~~~
-
-The documentation is built using
-`sphinx <https://www.sphinx-doc.org/en/master/>`__:
-
-.. code:: bash
-
-   poetry run make -C docs/ html
-   # The doc. will be found in docs/_build/html
-
-Tools
-~~~~~
-
-=================================================== =============== =========================================
-Tool                                                Usage           Command
-=================================================== =============== =========================================
-`black <https://github.com/psf/black>`__            Code formatting ``poetry run pre-commit run --all-files``
-`isort <https://github.com/timothycrosley/isort>`__ Import sorting  ``poetry run pre-commit run --all-files``
-`mypy <https://github.com/python/mypy>`__           Static typing   ``poetry run pre-commit run --all-files``
-`pylint <https://www.pylint.org/>`__                Linting         ``poetry run pre-commit run --all-files``
-`pytest <https://docs.pytest.org/en/latest/>`__     Unit tests      ``poetry run pytest``
-=================================================== =============== =========================================
-
-Release
-~~~~~~~
-
-To create a release:
-
-.. code:: bash
-
-   poetry version x.x.x
-   git commit -m 'Version x.x.x'
-   git tag vx.x.x
-   git push && git push --tags

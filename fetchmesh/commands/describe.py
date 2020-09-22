@@ -33,7 +33,7 @@ def expected_pairs(n_anchors, no_self, half):
 )
 def describe(date):
     """
-    Anchoring mesh overview.
+    Overview of the anchoring mesh at a given date.
     """
 
     mesh = AnchoringMesh.from_api().filter(MeasurementDateFilter.running(date, date))

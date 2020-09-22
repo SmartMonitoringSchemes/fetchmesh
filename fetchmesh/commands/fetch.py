@@ -82,7 +82,7 @@ def default_dir(
     default=None,
     metavar="REGION",
     type=str,
-    help="Keep only anchors located in the specified region (e.g Europe)",
+    help="Keep only anchors located in the specified region (e.g. Europe)",
 )
 @click.option(
     "--split", metavar="HOURS", type=int, help="Split the results files every X hours"
@@ -98,14 +98,14 @@ def default_dir(
     default=False,
     show_default=True,
     is_flag=True,
-    help="Remove measurements where the src and dst probe are equal",
+    help="Omit the measurements for which the source and destination probes are the same",
 )
 @click.option(
     "--only-self",
     default=False,
     show_default=True,
     is_flag=True,
-    help="Remove measurements where the src and dst probe are *not* equal",
+    help="Omit the measurements for which the source and destination probes are **not** the same",
 )
 @click.option(
     "--half",
@@ -139,7 +139,7 @@ def default_dir(
     default=False,
     show_default=True,
     is_flag=True,
-    help="Compress results using zstd",
+    help="Compress the results with the Zstandard algorithm",
 )
 @click.option(
     "--save-pairs",
@@ -155,7 +155,7 @@ def default_dir(
 )
 def fetch(**args):
     """
-    Fetch anchoring mesh measurement results from RIPE Atlas.
+    Fetch measurement results from the anchoring mesh.
     """
     print_args(args, fetch)
 

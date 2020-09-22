@@ -6,7 +6,7 @@ Alias resolution with kapar
 
 https://www.caida.org/tools/measurement/kapar/
 
-1. Install kapar
+Install kapar
 ~~~~~~~~~~~~~~~~
 
 .. code:: bash
@@ -23,14 +23,14 @@ https://www.caida.org/tools/measurement/kapar/
    # Verification
    ./kapar/kapar --help
 
-2. Fetch some traceroutes
+Fetch some traceroutes
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: bash
 
    fetchmesh fetch --type traceroute --af 4 --start-date "2020-07-20 12:00" --stop-date "2020-07-20 12:30" --sample-pairs 0.01 --jobs 4
 
-3. Convert traceroutes to kapar input format
+Convert traceroutes to kapar input format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ================================================== =============================
@@ -70,7 +70,7 @@ RIPE Atlas traceroute results in ``ndjson`` format ``paths.txt`` in kapar format
    with open("paths.txt", "w") as f:
        f.write("\n".join(output))
 
-4. Perform inference with kapar
+Perform inference with kapar
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +--------------------------------+-------------------------------------+
@@ -85,7 +85,7 @@ RIPE Atlas traceroute results in ``ndjson`` format ``paths.txt`` in kapar format
 
    ./kapar/kapar -o alis -B bogon-bn-agg.txt -P paths.txt
 
-5. Check the results
+Check the results
 ~~~~~~~~~~~~~~~~~~~~
 
 .. code:: bash

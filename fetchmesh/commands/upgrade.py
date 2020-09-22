@@ -9,7 +9,7 @@ def upgrade():
     Upgrade fetchmesh to the latest version from GitHub.
 
     \b
-    Please make sure that your SSH key associated to GitHub is present is you SSH agent.
+    Please make sure that your SSH key associated to GitHub is present in your SSH agent.
     See https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent.
     """
     url = "git+ssh://git@github.com/SmartMonitoringSchemes/fetchmesh.git"

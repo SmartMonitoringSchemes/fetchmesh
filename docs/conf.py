@@ -32,6 +32,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.githubpages",
+    "sphinx.ext.intersphinx",
     "sphinx_click.ext",
 ]
 
@@ -56,10 +57,18 @@ html_logo = "logo.png"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+# html_static_path = ["_static"]
 
 # -- Options for LaTeX output ------------------------------------------------
 
 # latex_engine = 'lualatex'
 # latex_domain_indices = False
-latex_elements = {"printindex": r"\footnotesize\raggedright\printindex"}
+latex_elements = {
+    "fontpkg": r"\usepackage[sfdefault]{FiraSans}",
+    "fncychap": r"\usepackage[Bjornstrup]{fncychap}",
+    "printindex": r"\footnotesize\raggedright\printindex",
+}
+
+# -- Options for intersphinx -------------------------------------------------
+
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}

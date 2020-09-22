@@ -64,12 +64,25 @@ class Country:
 
 @dataclass(frozen=True)
 class AtlasAnchor:
+    "A RIPE Atlas anchor."
+
     id: int
+    "Anchor ID."
+
     probe_id: int
+    "Anchor **probe** ID."
+
     fqdn: str
+    "Anchor fully-qualified domain name."
+
     country: Country
+    "Anchor country."
+
     as_v4: Optional[int]
+    "Anchor IPv4 autonomous system number (if applicable)."
+
     as_v6: Optional[int]
+    "Anchor IPv6 autonomous system number (if applicable)."
 
     # We rely on the fqdn to compare the anchors, and not on the id.
     # This is more robust if an anchor is decomissionned and replaced by another.
@@ -107,14 +120,31 @@ AtlasAnchorPair = Tuple[AtlasAnchor, AtlasAnchor]
 
 @dataclass(frozen=True)
 class AtlasMeasurement:
+    "A RIPE Atlas measurement."
+
     id: int
+    "Measurement ID."
+
     af: MeasurementAF
+    "Measurement IP address family."
+
     type: MeasurementType
+    "Measurement type."
+
     status: MeasurementStatus
+    "Measurement status."
+
     start_date: Optional[datetime]
+    "Measurement start date (if started)."
+
     stop_date: Optional[datetime]
+    "Measurement stop date (if stopped)."
+
     description: str
+    "Measurement description."
+
     tags: Tuple[str, ...]
+    "Measurement tags."
 
     ANCHOR_NAME_PATTERN = re.compile(r"^(\w+)-(\w+)-(as\d+).+$")
     ANCHOR_NAME_PATTERN_FALLBACK = re.compile(r"^.+anchor\s+(.+?)\..")
@@ -122,6 +152,7 @@ class AtlasMeasurement:
 
     @cached_property
     def anchor_name(self) -> Optional[str]:
+        "The target anchor name, extracted from the tags or from the description."
         if self.is_anchoring:
             # Unfortunately, tags are not always ordered the same:
             # 1404703:  (anchoring, de-str-as553, 6035, mesh)
@@ -138,6 +169,7 @@ class AtlasMeasurement:
 
     @cached_property
     def anchor_probe(self) -> Optional[int]:
+        "The target anchor probe ID, extracted from the tags."
         if self.is_anchoring:
             # See comment for `anchor_name`
             # return int(self.tags[2])
@@ -149,18 +181,25 @@ class AtlasMeasurement:
 
     @cached_property
     def is_anchoring(self) -> bool:
+        """
+        Whether the measurement is part of the `anchoring mesh`
+        or the `anchoring probes` measurements or not.
+        """
         return self.is_anchoring_mesh or self.is_anchoring_probes
 
     @cached_property
     def is_anchoring_mesh(self) -> bool:
+        "Whether the measurement is part of the `anchoring mesh` measurements."
         return self.description.startswith("Anchoring Mesh Measurement")
 
     @cached_property
     def is_anchoring_probes(self) -> bool:
+        "Whether the measurement is part of the `anchoring probes` measurements."
         return self.description.startswith("Anchoring Probes Measurement")
 
     @classmethod
     def from_dict(cls, d: dict):
+        "Build from a dict following the Atlas API format."
         start_date = parsetimestamp(d["start_time"], UTC)
         stop_date = None
 
@@ -185,6 +224,7 @@ class AtlasMeasurement:
         )
 
     def to_dict(self):
+        "Convert to a dict following the Atlas API format."
         start_time = None
         if self.start_date:
             start_time = int(self.start_date.timestamp())

@@ -7,7 +7,7 @@ PEERINGDB_API_URL = "https://peeringdb.com/api"
 
 
 class BasePeeringDBClient:
-    def __init__(self, base_url=PEERINGDB_API_URL, timeout=15):
+    def __init__(self, base_url=PEERINGDB_API_URL, timeout=30):
         self.base_url = base_url
         self.timeout = timeout
         self.logger = logging.getLogger(__name__)

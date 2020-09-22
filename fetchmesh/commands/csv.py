@@ -20,7 +20,7 @@ from .common import print_kv
 @click.group()
 def csv():
     """
-    Convert measurement results to CSV.
+    Convert measurement results from ND-JSON to CSV.
     """
 
 
@@ -45,7 +45,8 @@ def ping(files, dir, mode):
     Convert ping results from ND-JSON to CSV.
 
     .. warning::
-        Timestamps are aligned on 240s (4 minutes), even though measurement may have happened at +/- 120s.
+        Results timestamps will be aligned on multiple of 240 seconds (4 minutes), even though they may have been
+        recorded at ± 120 seconds.
 
     \b
     Split Mode (`N` files, `T` rows, `2` columns): ``timestamp, rtt``

@@ -99,6 +99,11 @@ class UnpackWorker:
 def unpack(**args):
     """
     Split measurement results by origin-destination pairs.
+
+    \b
+    `SRC` is a directory containing `.ndjson` files, and `DST` is an output directory.
+    By default, `DST` is set to `SRC_pairs`.
+
     """
     print_args(args, unpack)
 
