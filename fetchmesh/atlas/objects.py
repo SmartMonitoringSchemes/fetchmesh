@@ -53,6 +53,14 @@ class Country:
     def sub_region(self):
         return countries[self.iso3]["#region+name+preferred+sub"]
 
+    @classmethod
+    def from_iso(cls, iso: str) -> "Country":
+        if len(iso) == 2:
+            return cls(iso.upper())
+        if len(iso) == 3:
+            return cls(iso2iso3[iso.upper()])
+        raise Exception(f"Invalid ISO code: {iso}")
+
 
 @dataclass(frozen=True)
 class AtlasAnchor:
@@ -81,7 +89,7 @@ class AtlasAnchor:
             d["id"],
             d["probe"],
             d["fqdn"],
-            Country(d["country"]),
+            Country.from_iso(d["country"]),
             d["as_v4"],
             d["as_v6"],
         )
