@@ -1,8 +1,13 @@
-import sys
-
 import pytest
+from click.testing import CliRunner
 
 from fetchmesh.mocks import requests_mock
+
+
+class Runner(CliRunner):
+    def invoke(self, *args, **kwargs):
+        result = super().invoke(*args, **kwargs)
+        assert result.exit_code == 0
 
 
 @pytest.fixture(autouse=True)
@@ -13,5 +18,12 @@ def no_requests(monkeypatch):
 
 
 @pytest.fixture
-def tmpfile(tmp_path_factory):
-    return tmp_path_factory.mktemp("tmp") / "tmpfile"
+def runner():
+    cli = Runner()
+    with cli.isolated_filesystem():
+        yield cli
+
+
+@pytest.fixture
+def tmpfile(tmp_path):
+    return tmp_path / "tmpfile"

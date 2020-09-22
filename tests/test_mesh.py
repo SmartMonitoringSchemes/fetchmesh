@@ -1,5 +1,3 @@
-import pytest
-
 from fetchmesh.atlas import MeasurementAF, MeasurementType
 from fetchmesh.mesh import AnchoringMesh, AnchoringMeshPairs
 
@@ -11,18 +9,18 @@ def test_pairs_indexing():
     assert pairs[1] == data[1]
 
 
-def test_pairs_json():
+def test_pairs_json(tmp_path):
     mesh = AnchoringMesh.from_api()
     pairs = mesh.pairs[:100]
-    pairs.to_json("pairs.json")
-    pairsp = pairs.from_json("pairs.json")
+    pairs.to_json(tmp_path / "pairs.json")
+    pairsp = pairs.from_json(tmp_path / "pairs.json")
     assert pairsp == pairs
 
 
-def test_mesh_json():
+def test_mesh_json(tmp_path):
     mesh = AnchoringMesh.from_api()
-    mesh.to_json("mesh.json")
-    meshp = mesh.from_json("mesh.json")
+    mesh.to_json(tmp_path / "mesh.json")
+    meshp = mesh.from_json(tmp_path / "mesh.json")
     assert meshp == mesh
 
 

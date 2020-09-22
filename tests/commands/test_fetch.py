@@ -1,34 +1,23 @@
-import pytest
-from click.testing import CliRunner
-
 from fetchmesh.commands import main
 
 
-def test_fetch():
-    runner = CliRunner()
-
-    with runner.isolated_filesystem():
-        args = ["fetch", "--af", 4, "--type", "ping"]
-        args += ["--start-date", "2020-09-08", "--stop-date", "2020-09-09"]
-        result = runner.invoke(main, args)
-        assert result.exit_code == 0
+def test_fetch(runner):
+    args = """
+    fetch --af 4 --type ping --start-date 2020-09-08 --stop-date 2020-09-09
+          --sample-pairs 10
+    """
+    runner.invoke(main, args)
 
 
-def test_fetch_pairs():
-    runner = CliRunner()
+def test_fetch_pairs(runner):
+    args = """
+    fetch --af 4 --type ping --start-date 2020-09-08 --stop-date 2020-09-09
+          --sample-pairs 0.001 --save-pairs
+    """
+    runner.invoke(main, args)
 
-    with runner.isolated_filesystem():
-        args = ["fetch", "--af", 4, "--type", "ping"]
-        args += ["--sample-pairs", 0.5]
-        args += ["--start-date", "2020-09-08", "--stop-date", "2020-09-09"]
-        args += ["--save-pairs"]
-
-        result = runner.invoke(main, args)
-        assert result.exit_code == 0
-
-        args = ["fetch", "--af", 4, "--type", "ping"]
-        args += ["--start-date", "2020-09-08", "--stop-date", "2020-09-09"]
-        args += ["--load-pairs", "ping_v4_1599523200_1599609600.pairs"]
-
-        result = runner.invoke(main, args)
-        assert result.exit_code == 0
+    args = """
+    fetch --af 4 --type ping --start-date 2020-09-08 --stop-date 2020-09-09
+          --load-pairs ping_v4_1599523200_1599609600.pairs
+    """
+    runner.invoke(main, args)
