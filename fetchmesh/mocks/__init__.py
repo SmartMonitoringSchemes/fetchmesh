@@ -1,5 +1,4 @@
 from pathlib import Path
-from shutil import copy
 
 from mtoolbox.requests import RequestsMock
 

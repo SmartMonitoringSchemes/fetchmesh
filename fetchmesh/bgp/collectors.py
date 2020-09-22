@@ -34,14 +34,14 @@ class Collector(ABC):
     @abstractmethod
     def table_name(self, t: datetime) -> str:
         """
-        Returns the file name for the RIB at time `t`.
+        Return the file name for the RIB at time `t`.
         """
         ...
 
     @abstractmethod
     def table_url(self, t: datetime) -> str:
         """
-        Returns the URL for the RIB at time `t`.
+        Return the URL for the RIB at time `t`.
         """
         ...
 

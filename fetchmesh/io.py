@@ -45,10 +45,10 @@ class AtlasRecordsWriter:
     """
 
     file: Path
-    "Output file path."
+    """Output file path."""
 
     filters: List[StreamFilter[dict]] = field(default_factory=list)
-    "List of filters to apply before writing the records."
+    """List of filters to apply before writing the records."""
 
     append: bool = False
     """
@@ -58,7 +58,7 @@ class AtlasRecordsWriter:
     """
 
     log: bool = False
-    "Record the size (in bytes) of each record. See :any:`LogEntry`."
+    """Record the size (in bytes) of each record. See :any:`LogEntry`."""
 
     compression: bool = False
     """
@@ -73,7 +73,7 @@ class AtlasRecordsWriter:
 
     @property
     def log_file(self) -> Path:
-        "Path to the (optional) log file."
+        """Path to the (optional) log file."""
         return self.file.with_suffix(self.file.suffix + ".log")
 
     def __post_init__(self):
@@ -119,7 +119,7 @@ class AtlasRecordsWriter:
         return exc_type is not KeyboardInterrupt
 
     def write(self, record: dict):
-        "Write a single record."
+        """Write a single record."""
 
         # (1) Filter the record
         for filter_ in self.filters:
@@ -143,7 +143,7 @@ class AtlasRecordsWriter:
         self.f.write(data)
 
     def writeall(self, records: Iterable[dict]):
-        "Write all the records."
+        """Write all the records."""
 
         for record in records:
             self.write(record)
@@ -176,13 +176,13 @@ class AtlasRecordsReader:
     """
 
     file: Path
-    "Input file path."
+    """Input file path."""
 
     filters: List[StreamFilter[dict]] = field(default_factory=list)
-    "List of filters to apply when reading the records."
+    """List of filters to apply when reading the records."""
 
     transformers: List[RecordTransformer] = field(default_factory=list)
-    "List of transformers to apply when reading the records."
+    """List of transformers to apply when reading the records."""
 
     def __post_init__(self):
         self.file = Path(self.file)
@@ -234,7 +234,7 @@ class AtlasRecordsReader:
 
     @classmethod
     def all(cls, files, **kwargs):
-        "Read multiple files."
+        """Read multiple files."""
         for file in files:
             with cls(Path(file), **kwargs) as rdr:
                 for record in rdr:
@@ -242,6 +242,6 @@ class AtlasRecordsReader:
 
     @classmethod
     def glob(cls, path, pattern, **kwargs):
-        "Read multiple files from a glob pattern."
+        """Read multiple files from a glob pattern."""
         files = Path(path).glob(pattern)
         return cls.all(files, **kwargs)
