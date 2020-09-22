@@ -88,7 +88,10 @@ def default_dir(
     "--split", metavar="HOURS", type=int, help="Split the results files every X hours"
 )
 @click.option(
-    "--sample-pairs", default=1.0, show_default=True, help="Fraction of pairs to keep"
+    "--sample-pairs",
+    default=1.0,
+    show_default=True,
+    help="If <= 1, fraction of pairs to keep. If > 1, number of pairs to keep.",
 )
 @click.option(
     "--no-self",
@@ -196,8 +199,11 @@ def fetch(**args):
     if args["only_self"]:
         filters.append(SelfPairFilter(reverse=True))
     if args["sample_pairs"]:
-        # This filter must be last
-        filters.append(PairSampler(args["sample_pairs"]))
+        # This filter must be the last one
+        sample_pairs = args["sample_pairs"]
+        if sample_pairs > 1:
+            sample_pairs = int(sample_pairs)
+        filters.append(PairSampler(sample_pairs))
 
     for f in filters:
         pairs = pairs.filter(f)
