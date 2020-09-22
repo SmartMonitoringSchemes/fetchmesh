@@ -5,10 +5,9 @@ from enum import Enum
 from typing import Optional, Tuple
 
 from cached_property import cached_property
+from mtoolbox.countries import countries, iso2iso3
 from mtoolbox.datetime import parsetimestamp
 from pytz import UTC
-
-from .countries import countries
 
 
 class MeasurementAF(Enum):
@@ -40,21 +39,25 @@ class MeasurementType(Enum):
 
 class Country:
     def __init__(self, country_code):
-        self.info = countries[country_code]
+        if len(country_code) == 2:
+            self.iso2 = country_code
+        else:
+            self.iso2 = iso2iso3[country_code]
 
     def __eq__(self, o):
-        return self.country_code == o.country_code
+        return self.iso2 == o.iso2
 
     def __hash__(self):
-        return hash(self.country_code)
+        return hash(self.iso2)
 
     @property
     def country_code(self):
-        return self.info["code"]
+        return self.iso2
 
     @property
     def main_region(self):
-        return self.info["continent"]
+        iso3 = iso2iso3[self.iso2]
+        return countries[iso3]["#region+main+name+preferred"]
 
 
 @dataclass(frozen=True)
