@@ -37,27 +37,21 @@ class MeasurementType(Enum):
     WiFi = "wifi"
 
 
+@dataclass(frozen=True)
 class Country:
-    def __init__(self, country_code):
-        if len(country_code) == 2:
-            self.iso2 = country_code
-        else:
-            self.iso2 = iso2iso3[country_code]
-
-    def __eq__(self, o):
-        return self.iso2 == o.iso2
-
-    def __hash__(self):
-        return hash(self.iso2)
+    iso2: str
 
     @property
-    def country_code(self):
-        return self.iso2
+    def iso3(self):
+        return iso2iso3[self.iso2]
 
     @property
     def main_region(self):
-        iso3 = iso2iso3[self.iso2]
-        return countries[iso3]["#region+main+name+preferred"]
+        return countries[self.iso3]["#region+main+name+preferred"]
+
+    @property
+    def sub_region(self):
+        return countries[self.iso3]["#region+name+preferred+sub"]
 
 
 @dataclass(frozen=True)
@@ -95,7 +89,7 @@ class AtlasAnchor:
     def to_dict(self):
         return {
             **self.__dict__,
-            "country": self.country.country_code,
+            "country": self.country.iso2,
             "probe": self.probe_id,
         }
 
