@@ -1,5 +1,8 @@
 from collections import defaultdict
+from dataclasses import dataclass
 from multiprocessing import Pool
+from pathlib import Path
+from typing import List
 
 import click
 from mtoolbox.click import EnumChoice, ParsedDate, PathParam
@@ -12,33 +15,30 @@ from ..meta import AtlasResultsMeta
 from .common import print_args, print_kv
 
 
+@dataclass(frozen=True)
 class UnpackWorker:
-    def __init__(self, src, dst, mode):
-        self.src = src
-        self.dst = dst
-        self.mode = mode
+    src: Path
+    dst: Path
+    mode: str
 
-    def do(self, metas):
-        metas = sorted(metas, key=lambda x: x.start_date)
-        start_timestamp = metas[0].start_timestamp
-        stop_timestamp = metas[-1].stop_timestamp
+    def do(self, metas: List[AtlasResultsMeta]):
         key = lambda x: (x["msm_id"], x["prb_id"])
-        seen = set()
-        skip = set()
+
+        # Find the timestamp of the first result, and of the last result.
+        metas = sorted(metas, key=lambda x: x.start_date)
+        start = metas[0].start_timestamp
+        stop = metas[-1].stop_timestamp
+
+        # Keep track of already seen pairs, and of pairs to skip.
+        seen, skip = set(), set()
+
         for meta in metas:
             file = self.src.joinpath(meta.filename)
             with AtlasRecordsReader(file) as r:
-                r = filter(lambda x: x, r)  # Cleanup this.
+                # We skip `None` records.
+                r = filter(lambda x: x, r)
                 for pair, records in groupby_stream(r, key, 10 ** 6):
-                    name = "{}_v{}_{}_{}_{}_{}.ndjson".format(
-                        meta.type.value,
-                        meta.af.value,
-                        start_timestamp,
-                        stop_timestamp,
-                        pair[0],
-                        pair[1],
-                    )
-                    file = self.dst.joinpath(name)
+                    file = self.dst / self.output_name(meta, start, stop, *pair)
                     if pair not in seen:
                         # Overwrite mode: delete prior file.
                         if self.mode == "overwrite" and file.exists():
@@ -51,6 +51,12 @@ class UnpackWorker:
                         continue
                     with AtlasRecordsWriter(file, compression=False, append=True) as w:
                         w.writeall(records)
+
+    @staticmethod
+    def output_name(meta, start, stop, msm_id, prb_id):
+        return "{}_v{}_{}_{}_{}_{}.ndjson".format(
+            meta.type.value, meta.af.value, start, stop, msm_id, prb_id
+        )
 
 
 @click.command()
