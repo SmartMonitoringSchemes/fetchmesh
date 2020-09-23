@@ -51,6 +51,11 @@ class AnchoringMeshPairs:
         return hash(set(self._pairs))
 
     def filter(self, f):
+        if isinstance(f, list):
+            pairs = self
+            for x in f:
+                pairs = pairs.filter(x)
+            return pairs
         pairs = f(self._pairs)
         return AnchoringMeshPairs(pairs)
 
@@ -130,6 +135,11 @@ class AnchoringMesh:
         if isinstance(f, MeasurementFilter):
             data = f(self._data, key=lambda x: x[1])
             return AnchoringMesh(data)
+        if isinstance(f, list):
+            mesh = self
+            for x in f:
+                mesh = mesh.filter(x)
+            return mesh
         raise NotImplementedError(f"{type(f).__name__} is not supported")
 
     def find_measurement(self, anchor, af, type_):
