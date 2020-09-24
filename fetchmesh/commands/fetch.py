@@ -8,7 +8,7 @@ from traceback import print_exc
 import click
 import psutil
 from mtoolbox.click import EnumChoice, ParsedDate, PathParam
-from mtoolbox.datetime import datetimerange, totimestamp
+from mtoolbox.datetime import datetimetuplerange, totimestamp
 from tqdm import tqdm
 
 from ..atlas import MeasurementAF, MeasurementType
@@ -233,11 +233,11 @@ def fetch(**args):
     jobs = []
     for target, probes in pairs.by_target():
         measurement = mesh.find_measurement(target, args["af"], args["type"])
-        for date in datetimerange(start_date, stop_date, split):
+        for start, stop in datetimetuplerange(start_date, stop_date, split):
             meta = AtlasResultsMeta.from_measurement(
                 measurement,
-                start_date=date,
-                stop_date=date + split,
+                start_date=start,
+                stop_date=stop,
                 compressed=args["compress"],
             )
             jobs.append(FetchJob(meta, probes))
