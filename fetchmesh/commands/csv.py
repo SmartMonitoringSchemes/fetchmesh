@@ -30,7 +30,7 @@ def csv():
     default=".",
     show_default=True,
     type=PathParam(),
-    help="Output directory",
+    help="Output directory.",
 )
 @click.option(
     "--mode",
@@ -92,10 +92,13 @@ def ping(files, dir, mode):
             df = df.resample(Timedelta(240, unit="seconds")).min()
             frames[pair] = df
 
+    # 3. Write the results.
+    dir.mkdir(exist_ok=True, parents=True)
+
     # 3a. In split mode, we just have to write these frames to CSVs.
     if mode == "split":
         for pair, frame in tqdm(frames.items(), desc="write"):
-            name = "{}_{}.ndjson".format(*pair)
+            name = "{}_{}.csv".format(*pair)
             file = dir.joinpath(name)
             frame.reset_index(inplace=True)
             frame.timestamp = frame.timestamp.apply(lambda x: int(x.timestamp()))
