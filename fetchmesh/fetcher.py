@@ -19,13 +19,13 @@ from .meta import AtlasResultsMeta
 log = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(frozen=True)
 class FetchJob:
     meta: AtlasResultsMeta
     probes: List[int] = field(default_factory=list)
 
 
-@dataclass
+@dataclass(frozen=True)
 class SimpleFetcher:
     """
     Given an AtlasResultsMeta and a list of probes id,
@@ -37,6 +37,9 @@ class SimpleFetcher:
     filters: List = field(default_factory=list)
     log: bool = False
     # retry_on_timeout: bool = True
+
+    def __post_init__(self):
+        self.directory.mkdir(exist_ok=True, parents=True)
 
     def fetch(self, job: FetchJob):
         file = self.directory / job.meta.filename

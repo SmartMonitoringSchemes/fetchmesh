@@ -226,34 +226,27 @@ def fetch(**args):
         meta_str += f"\nfetchmesh fetch {format_args(args_fetch, fetch)}"
         meta_file.write_text(meta_str)
 
+    split = stop_date - start_date
     if args["split"]:
         split = dt.timedelta(hours=args["split"])
-    else:
-        split = stop_date - start_date
 
     jobs = []
     for target, probes in pairs.by_target():
         measurement = mesh.find_measurement(target, args["af"], args["type"])
-        if not measurement:
-            raise click.ClickException(f"No measurement found for {target}")
         for date in datetimerange(start_date, stop_date, split):
-            meta = AtlasResultsMeta(
-                measurement.af,
-                measurement.type,
-                measurement.id,
-                date,
-                date + split,
-                args["compress"],
+            meta = AtlasResultsMeta.from_measurement(
+                measurement,
+                start_date=date,
+                stop_date=date + split,
+                compressed=args["compress"],
             )
             jobs.append(FetchJob(meta, probes))
-
-    fetcher = SimpleFetcher(outdir)
 
     # Stop here if we perform a dry run
     if args["dry_run"]:
         return
 
-    outdir.mkdir(exist_ok=True, parents=True)
+    fetcher = SimpleFetcher(outdir)
     atexit.register(cleanup)
 
     with ProcessPoolExecutor(args["jobs"]) as executor:

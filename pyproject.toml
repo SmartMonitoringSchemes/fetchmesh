@@ -10,7 +10,7 @@ python = "^3.7"
 appdirs = "^1.4.3"
 cached-property = "^1.5.1"
 click = "^7.0"
-mtoolbox = {extras = ["click"], git = "https://github.com/maxmouchet/mtoolbox.git", tag = "v0.1.7"}
+mtoolbox = {extras = ["click"], git = "https://github.com/maxmouchet/mtoolbox.git", tag = "v0.1.8"}
 pandas = "^1.0.1"
 psutil = "^5.7.0"
 pytz = "^2020.1"

@@ -93,7 +93,9 @@ class AtlasResultsMeta:
         )
 
     @classmethod
-    def from_measurement(cls, msm: AtlasMeasurement, *args, **kwargs):
+    def from_measurement(
+        cls, msm: AtlasMeasurement, *args, **kwargs
+    ) -> "AtlasResultsMeta":
         return cls(msm.af, msm.type, msm.id, *args, **kwargs)
 
     def __str__(self):
