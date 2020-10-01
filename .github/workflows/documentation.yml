@@ -13,7 +13,7 @@ jobs:
 
       - name: Install LaTeX
         run: |
-          sudo apt-get install -y texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra latexmk
+          sudo apt-get install -y texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra latexmk
 
       - name: Install project
         run: |
