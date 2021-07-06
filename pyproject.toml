@@ -28,7 +28,7 @@ pylint = "^2.6.0"
 pytest = "^6.0"
 pytest-cov = "^2.8"
 sphinx = "^3.2"
-sphinx-click = "^2.5"
+sphinx-click = "^3.0"
 
 [tool.poetry.scripts]
 fetchmesh = 'fetchmesh.commands:main'
