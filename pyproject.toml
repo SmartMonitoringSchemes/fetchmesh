@@ -19,7 +19,7 @@ requests = "^2.22.0"
 rich = "^10.5"
 tenacity = "^6.2.0"
 tqdm = "^4.46.0"
-zstandard = "^0.14.0"
+zstandard = "^0.15.2"
 
 [tool.poetry.dev-dependencies]
 hypothesis = "^6.14.1"
