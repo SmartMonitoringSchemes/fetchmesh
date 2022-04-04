@@ -7,6 +7,9 @@
   <a href="https://github.com/SmartMonitoringSchemes/fetchmesh/raw/gh-pages/fetchmesh.pdf">
     <img src="https://img.shields.io/badge/documentation-pdf-blue.svg?logo=readthedocs&logoColor=white&style=flat">
   </a>
+  <a href="https://pypi.org/project/fetchmesh/">
+    <img src="https://img.shields.io/pypi/v/fetchmesh?color=blue&logo=pypi&logoColor=white">
+  </a>
   <a href="https://github.com/SmartMonitoringSchemes/fetchmesh/actions">
     <img src="https://img.shields.io/github/workflow/status/SmartMonitoringSchemes/fetchmesh/CI?logo=github&label=tests">
   </a>
