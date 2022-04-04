@@ -21,9 +21,10 @@ fetchmesh is a tool to simplify working with Atlas [anchoring mesh](https://atla
 
 ```bash
 # Requires Python 3.7+
-pip install --upgrade pip
-pip install --upgrade git+ssh://git@github.com/SmartMonitoringSchemes/fetchmesh.git
+pip install fetchmesh
+```
 
+```bash
 fetchmesh --help
 # Usage: fetchmesh [OPTIONS] COMMAND [ARGS]...
 # ...
