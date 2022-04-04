@@ -5,8 +5,8 @@ from enum import Enum
 from typing import Optional, Tuple
 
 from cached_property import cached_property
-from mtoolbox.countries import countries, iso2iso3
-from mtoolbox.datetime import parsetimestamp
+from mbox.countries import countries, iso2iso3
+from mbox.datetime import parsetimestamp
 from pytz import UTC
 
 

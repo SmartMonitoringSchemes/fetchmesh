@@ -1,7 +1,7 @@
 import logging
 
 import requests
-from mtoolbox.cache import Cache
+from mbox.cache import Cache
 
 PEERINGDB_API_URL = "https://peeringdb.com/api"
 

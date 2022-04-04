@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from mtoolbox.itertools import groupby
+from mbox.itertools import groupby
 from radix import Radix
 
 from .client import PeeringDBClient

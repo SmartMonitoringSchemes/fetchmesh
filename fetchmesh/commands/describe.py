@@ -2,8 +2,8 @@
 from collections import defaultdict
 
 import click
-from mtoolbox.click import ParsedDate
-from mtoolbox.itertools import countby
+from mbox.click import ParsedDate
+from mbox.itertools import countby
 from rich import box
 from rich.table import Table
 from rich.text import Text

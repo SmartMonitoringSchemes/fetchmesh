@@ -5,8 +5,8 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import click
-from mtoolbox.click import PathParam
-from mtoolbox.itertools import groupby_stream
+from mbox.click import PathParam
+from mbox.itertools import groupby_stream
 from pandas import DataFrame, Timedelta, concat
 from tqdm import tqdm
 

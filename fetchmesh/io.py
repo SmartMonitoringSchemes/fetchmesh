@@ -6,8 +6,8 @@ from pathlib import Path
 from traceback import print_exception
 from typing import Iterable, List, Optional
 
-from mtoolbox.magic import CompressionFormat, detect_compression
-from mtoolbox.optional import tryfunc
+from mbox.magic import CompressionFormat, detect_compression
+from mbox.optional import tryfunc
 from zstandard import ZstdCompressionDict, ZstdCompressor, ZstdDecompressor
 
 from .filters import StreamFilter

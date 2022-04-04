@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from mtoolbox.requests import RequestsMock
+from mbox.requests import RequestsMock
 
 
 def requests_mock():

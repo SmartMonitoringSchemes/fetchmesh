@@ -102,7 +102,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-poetry.lock
 
 # fetchmesh output
 ping_v*

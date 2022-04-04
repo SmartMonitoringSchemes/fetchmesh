@@ -5,7 +5,7 @@ from math import ceil
 from urllib.parse import urlencode
 
 import requests
-from mtoolbox.cache import Cache
+from mbox.cache import Cache
 from tqdm import tqdm
 
 ATLAS_API_URL = "https://atlas.ripe.net/api/v2"

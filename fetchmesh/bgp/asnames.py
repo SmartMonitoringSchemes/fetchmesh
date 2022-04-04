@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
 
-from mtoolbox.cache import Cache
-from mtoolbox.requests import FTPAdapter
+from mbox.cache import Cache
+from mbox.requests import FTPAdapter
 from requests import Session
 
 DEFAULT_NAMES_URL = "ftp://ftp.ripe.net/ripe/asnames/asn.txt"

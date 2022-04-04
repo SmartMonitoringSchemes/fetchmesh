@@ -4,7 +4,7 @@
 # Handles multiple origin ASes (from goasn)
 from io import TextIOWrapper
 
-from mtoolbox.magic import CompressionFormat, detect_compression
+from mbox.magic import CompressionFormat, detect_compression
 from radix import Radix
 from zstandard import ZstdDecompressor
 
