@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "fetchmesh"
 version = "0.3.1"
-description = ""
+description = "A Python library for working with the RIPE Atlas anchoring mesh."
 authors = ["Maxime Mouchet <max@maxmouchet.com>"]
 license = "MIT"
 
