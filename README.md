@@ -23,7 +23,7 @@ fetchmesh is a tool to simplify working with Atlas [anchoring mesh](https://atla
 ## :rocket: Quick Start
 
 ```bash
-# Requires Python 3.7+
+# Requires Python 3.8+
 pip install fetchmesh
 ```
 
