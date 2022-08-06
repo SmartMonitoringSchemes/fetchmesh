@@ -30,7 +30,7 @@ pylint = "^2.14.5"
 pytest = "^7.1.2"
 pytest-cov = "^3.0"
 sphinx = "^5.1"
-sphinx-click = "^4.2"
+sphinx-click = "^4.3"
 
 [tool.poetry.scripts]
 fetchmesh = 'fetchmesh.commands:main'
