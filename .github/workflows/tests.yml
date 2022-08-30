@@ -1,0 +1,55 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - uses: dioptra-io/setup-poetry-action@v1
+      - name: Install package
+        run: poetry install
+      - name: Run tests
+        run: poetry run pytest
+      - name: Run doctests
+        run: poetry run make -C docs/ doctest
+      - uses: codecov/codecov-action@v3
+
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - uses: dioptra-io/setup-poetry-action@v1
+      - name: Install LaTeX
+        run: sudo apt-get install -y texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra latexmk
+      - name: Install package
+        run: poetry install
+      - name: Build documentation
+        run: |
+          poetry run make -C docs/ latexpdf
+          find docs/_build/latex/ -type f -not -name '*.pdf' -exec rm '{}' \;
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: docs/_build/latex
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  pypi:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dioptra-io/publish-python-action@v1
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
+          upload: ${{ startsWith(github.ref, 'refs/tags/v') }}
