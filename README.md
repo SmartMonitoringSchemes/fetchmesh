@@ -1,7 +1,7 @@
 <p align="center">
   <img src="/docs/logo.png" height="150"><br/>
   <i>A Python library for working with the RIPE Atlas anchoring mesh.</i><br/><br/>
-  <a href="https://codecov.io/gh/SmartMonitoringSchemes/fetchmesh">
+  <a href="https://app.codecov.io/gh/SmartMonitoringSchemes/fetchmesh">
     <img src="https://img.shields.io/codecov/c/github/SmartMonitoringSchemes/fetchmesh?logo=codecov&logoColor=white">
   </a>
   <a href="https://github.com/SmartMonitoringSchemes/fetchmesh/raw/gh-pages/fetchmesh.pdf">
@@ -10,8 +10,8 @@
   <a href="https://pypi.org/project/fetchmesh/">
     <img src="https://img.shields.io/pypi/v/fetchmesh?color=blue&logo=pypi&logoColor=white">
   </a>
-  <a href="https://github.com/SmartMonitoringSchemes/fetchmesh/actions">
-    <img src="https://img.shields.io/github/workflow/status/SmartMonitoringSchemes/fetchmesh/CI?logo=github&label=tests">
+  <a href="https://github.com/SmartMonitoringSchemes/fetchmesh/actions/workflows/tests.yml">
+    <img src="https://img.shields.io/github/workflow/status/SmartMonitoringSchemes/fetchmesh/Tests?logo=github&label=tests">
   </a>
 </p>
 
