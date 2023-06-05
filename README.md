@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/pypi/v/fetchmesh?color=blue&logo=pypi&logoColor=white">
   </a>
   <a href="https://github.com/SmartMonitoringSchemes/fetchmesh/actions/workflows/tests.yml">
-    <img src="https://img.shields.io/github/workflow/status/SmartMonitoringSchemes/fetchmesh/Tests?logo=github&label=tests">
+    <img src="https://img.shields.io/github/actions/workflow/status/SmartMonitoringSchemes/fetchmesh/tests.yml?logo=github&label=tests">
   </a>
 </p>
 
